@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Answers.API.Data;
+using Answers.API.Helpers;
+using Answers.Shared.DTOs;
+using Answers.Shared.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Answers.Shared.DTOs;
-using Answers.Shared.Entities;
-using Answers.API.Data;
-using Answers.API.Helpers;
 
 namespace Answers.API.Controllers
 {
@@ -88,49 +88,17 @@ namespace Answers.API.Controllers
         [HttpPost]
         public async Task<ActionResult> PostAsync(Country country)
         {
-            try
-            {
-                _context.Add(country);
-                await _context.SaveChangesAsync();
-                return Ok(country);
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                if (dbUpdateException.InnerException!.Message.Contains("duplicate"))
-                {
-                    return BadRequest("Ya existe un país con el mismo nombre.");
-                }
-
-                return BadRequest(dbUpdateException.Message);
-            }
-            catch(Exception exception) 
-            {
-                return BadRequest(exception.Message);
-            }
+            _context.Add(country);
+            await _context.SaveChangesAsync();
+            return Ok(country);
         }
 
         [HttpPut]
         public async Task<ActionResult> PutAsync(Country country)
         {
-            try
-            {
-                _context.Update(country);
-                await _context.SaveChangesAsync();
-                return Ok(country);
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                if (dbUpdateException.InnerException!.Message.Contains("duplicate"))
-                {
-                    return BadRequest("Ya existe un país con el mismo nombre.");
-                }
-
-                return BadRequest(dbUpdateException.Message);
-            }
-            catch (Exception exception)
-            {
-                return BadRequest(exception.Message);
-            }
+            _context.Update(country);
+            await _context.SaveChangesAsync();
+            return Ok(country);
         }
 
         [HttpDelete("{id:int}")]

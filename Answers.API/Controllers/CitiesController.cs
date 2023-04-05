@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Answers.API.Data;
+using Answers.API.Helpers;
+using Answers.Shared.DTOs;
+using Answers.Shared.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Answers.Shared.DTOs;
-using Answers.Shared.Entities;
-using Answers.API.Data;
-using Answers.API.Helpers;
 
 namespace Answers.API.Controllers
 {
@@ -81,49 +81,17 @@ namespace Answers.API.Controllers
         [HttpPost]
         public async Task<ActionResult> PostAsync(City city)
         {
-            try
-            {
-                _context.Add(city);
-                await _context.SaveChangesAsync();
-                return Ok(city);
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                if (dbUpdateException.InnerException!.Message.Contains("duplicate"))
-                {
-                    return BadRequest("Ya existe una ciudad con el mismo nombre.");
-                }
-
-                return BadRequest(dbUpdateException.Message);
-            }
-            catch (Exception exception)
-            {
-                return BadRequest(exception.Message);
-            }
+            _context.Add(city);
+            await _context.SaveChangesAsync();
+            return Ok(city);
         }
 
         [HttpPut]
         public async Task<ActionResult> PutAsync(City city)
         {
-            try
-            {
-                _context.Update(city);
-                await _context.SaveChangesAsync();
-                return Ok(city);
-            }
-            catch (DbUpdateException dbUpdateException)
-            {
-                if (dbUpdateException.InnerException!.Message.Contains("duplicate"))
-                {
-                    return BadRequest("Ya existe una ciudad con el mismo nombre.");
-                }
-
-                return BadRequest(dbUpdateException.Message);
-            }
-            catch (Exception exception)
-            {
-                return BadRequest(exception.Message);
-            }
+            _context.Update(city);
+            await _context.SaveChangesAsync();
+            return Ok(city);
         }
 
         [HttpDelete("{id:int}")]

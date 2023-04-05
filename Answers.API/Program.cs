@@ -1,5 +1,6 @@
 using Answers.API.Data;
 using Answers.API.Helpers;
+using Answers.API.Middlewares;
 using Answers.API.Services;
 using Answers.Shared.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -53,6 +54,7 @@ builder.Services.AddScoped<IApiService, ApiService>();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
 builder.Services.AddScoped<IFileStorage, FileStorage>();
 builder.Services.AddScoped<IMailHelper, MailHelper>();
+builder.Services.AddScoped<DuplicateKeyExceptionHandlerMiddleware>();
 
 builder.Services.AddIdentity<User, IdentityRole>(x =>
 {
@@ -102,12 +104,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<DuplicateKeyExceptionHandlerMiddleware>();
+
 
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-
 app.UseCors(x => x
     .AllowAnyMethod()
     .AllowAnyHeader()
