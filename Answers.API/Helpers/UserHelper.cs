@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Answers.API.Data;
 using Answers.Shared.DTOs;
 using Answers.Shared.Entities;
-using Answers.API.Data;
-using Answers.API.Helpers;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Answers.API.Helpers
 {
@@ -11,10 +10,10 @@ namespace Answers.API.Helpers
     {
         private readonly DataContext _context;
         private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<Role> _roleManager;
         private readonly SignInManager<User> _signInManager;
 
-        public UserHelper(DataContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, SignInManager<User> signInManager)
+        public UserHelper(DataContext context, UserManager<User> userManager, RoleManager<Role> roleManager, SignInManager<User> signInManager)
         {
             _context = context;
             _userManager = userManager;
@@ -47,7 +46,7 @@ namespace Answers.API.Helpers
             bool roleExists = await _roleManager.RoleExistsAsync(roleName);
             if (!roleExists)
             {
-                await _roleManager.CreateAsync(new IdentityRole
+                await _roleManager.CreateAsync(new Role
                 {
                     Name = roleName
                 });
@@ -70,7 +69,7 @@ namespace Answers.API.Helpers
                 .Include(u => u.City!)
                 .ThenInclude(c => c.State!)
                 .ThenInclude(s => s.Country!)
-                .FirstOrDefaultAsync(x => x.Id == userId.ToString());
+                .FirstOrDefaultAsync(x => x.Id == userId);
             return user!;
         }
 

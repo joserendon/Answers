@@ -56,7 +56,7 @@ builder.Services.AddScoped<IFileStorage, FileStorage>();
 builder.Services.AddScoped<IMailHelper, MailHelper>();
 builder.Services.AddScoped<DuplicateKeyExceptionHandlerMiddleware>();
 
-builder.Services.AddIdentity<User, IdentityRole>(x =>
+builder.Services.AddIdentity<User, Role>(x =>
 {
     x.Tokens.AuthenticatorTokenProvider = TokenOptions.DefaultAuthenticatorProvider;
     x.SignIn.RequireConfirmedEmail = true;

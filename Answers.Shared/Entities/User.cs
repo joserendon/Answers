@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Answers.Shared.Enums;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
-using Answers.Shared.Entities;
-using Answers.Shared.Enums;
 
 namespace Answers.Shared.Entities
 {
-    public class User : IdentityUser
+    public class User : IdentityUser<Guid>
     {
         [Display(Name = "Documento")]
         [MaxLength(20, ErrorMessage = "El campo {0} debe tener máximo {1} caractéres.")]
