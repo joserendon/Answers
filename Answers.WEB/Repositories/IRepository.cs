@@ -1,6 +1,4 @@
-﻿using Answers.WEB.Repositories;
-
-namespace Answers.WEB.Repositories
+﻿namespace Answers.WEB.Repositories
 {
     public interface IRepository
     {

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Answers.Shared.Entities;
 
 namespace Answers.Shared.Entities
 {

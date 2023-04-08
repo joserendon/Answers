@@ -1,6 +1,5 @@
-﻿using Newtonsoft.Json;
-using Answers.Shared.Responses;
-using Answers.API.Services;
+﻿using Answers.Shared.Responses;
+using Newtonsoft.Json;
 
 namespace Answers.API.Services
 {

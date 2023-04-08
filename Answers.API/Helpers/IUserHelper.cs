@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Answers.Shared.DTOs;
+﻿using Answers.Shared.DTOs;
 using Answers.Shared.Entities;
+using Microsoft.AspNetCore.Identity;
 
 namespace Answers.API.Helpers
 {
