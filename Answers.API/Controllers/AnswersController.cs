@@ -70,7 +70,7 @@ namespace Answers.API.Controllers
                 .ToListAsync());
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetAsync(Guid id)
         {
             var answer = await _context.Answers
@@ -101,7 +101,7 @@ namespace Answers.API.Controllers
             return Ok(answer);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var answer = await _context.Answers.FirstOrDefaultAsync(x => x.Id == id);

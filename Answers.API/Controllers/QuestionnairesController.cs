@@ -22,7 +22,7 @@ namespace Answers.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("combo/{questionId:int}")]
+        [HttpGet("combo/{questionId:Guid}")]
         public async Task<ActionResult> GetCombo(Guid questionId)
         {
             return Ok(await _context.Questionnaires
@@ -66,7 +66,7 @@ namespace Answers.API.Controllers
             return Ok(totalPages);
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:Guid}")]
         public async Task<IActionResult> GetAsync(Guid id)
         {
             var questionnaire = await _context.Questionnaires.FirstOrDefaultAsync(x => x.Id == id);
@@ -94,7 +94,7 @@ namespace Answers.API.Controllers
             return Ok(questionnaire);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var questionnaire = await _context.Questionnaires.FirstOrDefaultAsync(x => x.Id == id);
