@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Answers.Shared.Entities;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Answers.Shared.Entities;
 
 namespace Answers.Shared.DTOs
 {

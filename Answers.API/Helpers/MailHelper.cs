@@ -1,7 +1,6 @@
-﻿using MailKit.Net.Smtp;
+﻿using Answers.Shared.Responses;
+using MailKit.Net.Smtp;
 using MimeKit;
-using Answers.Shared.Responses;
-using Answers.API.Helpers;
 
 namespace Answers.API.Helpers
 {

@@ -1,0 +1,37 @@
+﻿@page "/answers/create"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>Crear Cuestionario</h3>
+
+<AnswerForm @ref="answerForm" Answer="answer" OnValidSubmit="CreateAsync" ReturnAction="Return" />
+
+@code {
+    private Answer answer = new();
+    private AnswerForm? answerForm;
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    private async Task CreateAsync()
+    {
+        var httpResponse = await repository.Post("/api/answers", answer);
+        if (httpResponse.Error)
+        {
+            var message = await httpResponse.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
+        Return();
+    }
+
+    private void Return()
+    {
+        answerForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo("/answers");
+    }
+}

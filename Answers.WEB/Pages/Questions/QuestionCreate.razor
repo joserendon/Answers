@@ -1,0 +1,42 @@
+﻿@page "/questions/create/{AnswerId:guid}"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>Crear Pregunta</h3>
+
+<QuestionForm @ref="questionForm" Question="question" OnValidSubmit="CreateAsync" ReturnAction="Return" />
+
+@code {
+    private Question question = new();
+    private QuestionForm? questionForm;
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    [Parameter]
+    public Guid AnswerId { get; set; }
+
+    private async Task CreateAsync()
+    {
+
+        question.AnswerId = AnswerId;
+        var httpResponse = await repository.Post("/api/questions", question);
+        if (httpResponse.Error)
+        {
+            var message = await httpResponse.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
+        Return();
+    }
+
+    private void Return()
+    {
+        questionForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo($"/answers/details/{AnswerId}");
+    }
+}

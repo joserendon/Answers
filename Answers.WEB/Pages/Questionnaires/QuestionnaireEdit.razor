@@ -1,0 +1,66 @@
+﻿@page "/questionnaires/edit/{QuestionnaireId:guid}"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>Editar Respuesta</h3>
+
+@if (questionnaire is null)
+{
+    <div class="spinner"/>
+}
+else
+{
+    <QuestionnaireForm @ref="questionnaireForm" Questionnaire="questionnaire" OnValidSubmit="EditAsync" ReturnAction="Return" />
+}
+
+@code {
+    private Questionnaire? questionnaire;
+    private QuestionnaireForm? questionnaireForm;
+
+    [Parameter]
+    public Guid QuestionnaireId { get; set; }
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHttp = await repository.Get<Questionnaire>($"/api/questionnaires/{QuestionnaireId}");
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/answers");
+                return;
+            }
+
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        questionnaire = responseHttp.Response;
+    }
+
+    private async Task EditAsync()
+    {
+        var responseHttp = await repository.Put("/api/questionnaires", questionnaire);
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
+        Return();
+    }
+
+    private void Return()
+    {
+        questionnaireForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo($"/questions/details/{questionnaire!.QuestionId}");
+    }
+}
