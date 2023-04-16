@@ -2,7 +2,7 @@
 {
     public enum QuestionType : byte
     {
-        Open,
+        Open = 1,
         Choice,
         Multiple,
     }

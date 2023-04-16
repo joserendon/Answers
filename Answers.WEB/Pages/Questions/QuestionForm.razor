@@ -3,14 +3,28 @@
 <NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
 
 <EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
     <div class="mb-3">
-        <label>Cuestionario:</label>
+        <label>Pregunta:</label>
         <div>
-            <InputTextArea class="form-control" @bind-Value="@Answer.Title" rows="2" />
-            <ValidationMessage For="@(() => Answer.Title)"/>
+            <InputTextArea class="form-control" @bind-Value="@Question.Name" rows="4"/> 
+            <ValidationMessage For="@(() => Question.Name)" />
         </div>
     </div>
+    <div class="mb-3">
+        <label>Tipo:</label>
+        <div>
+            <select class="form-select" @bind="@Question.Type">
+                <option value="0">-- Seleccione un tipo--</option>
+                @foreach (QuestionType type in Enum.GetValues(typeof(QuestionType)))
+                {
+                    <option value="@type" selected="@(type == Question.Type)">@Enum.GetName(typeof(QuestionType),type)</option>
+                }
+            </select>
+            <ValidationMessage For="@(() => Question.Type)" />
+        </div>
+    </div>
+
     <button class="btn btn-primary" type="submit">Guardar Cambios</button>
     <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
 </EditForm>
@@ -20,7 +34,7 @@
 
     [Parameter]
     [EditorRequired]
-    public Answer Answer { get; set; } = null!;
+    public Question Question { get; set; } = null!;
 
     [Parameter]
     [EditorRequired]
@@ -34,7 +48,7 @@
 
     protected override void OnInitialized()
     {
-        editContext = new(Answer);
+        editContext = new(Question);
     }
 
     private async Task OnBeforeInternalNavigation(LocationChangingContext context)
@@ -46,14 +60,14 @@
         }
 
         var result = await sweetAlertService.FireAsync(new SweetAlertOptions
-        {
-            Title = "Confirmación",
-            Text = "¿Deseas abandonar la página y perder los cambios?",
-            Icon = SweetAlertIcon.Question,
-            ShowCancelButton = true,
-            CancelButtonText = "No",
-            ConfirmButtonText = "Si"
-        });
+            {
+                Title = "Confirmación",
+                Text = "¿Deseas abandonar la página y perder los cambios?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true,
+                CancelButtonText = "No",
+                ConfirmButtonText = "Si"
+            });
 
         var confirm = !string.IsNullOrEmpty(result.Value);
         if (confirm)

@@ -1,0 +1,66 @@
+﻿@page "/questions/edit/{QuestionId:guid}"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>Editar Pregunta</h3>
+
+@if (question is null)
+{
+            <div class="spinner"/>
+}
+else
+{
+            <QuestionForm @ref="questionForm" Question="question" OnValidSubmit="EditAsync" ReturnAction="Return" />
+}
+
+@code {
+    private Question? question;
+    private QuestionForm? questionForm;
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    [Parameter]
+    public Guid QuestionId { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHttp = await repository.Get<Question>($"/api/questions/{QuestionId}");
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/answers");
+                return;
+            }
+
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        question = responseHttp.Response;
+    }
+
+    private async Task EditAsync()
+    {
+        var responseHttp = await repository.Put("/api/questions", question);
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
+        Return();
+    }
+
+    private void Return()
+    {
+        questionForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo($"/answers/details/{question!.AnswerId}");
+    }
+}

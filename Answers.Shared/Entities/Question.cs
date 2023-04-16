@@ -11,11 +11,12 @@ namespace Answers.Shared.Entities
         [Display(Name = "Pregunta")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [MaxLength(1000, ErrorMessage = "El campo {0} no puede tener más de {1} caractéres")]
+        [DataType(DataType.MultilineText)]
         public string Name { get; set; } = null!;
 
         [Display(Name = "Tipo de pregunta")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        [Range(0, byte.MaxValue, ErrorMessage = "El campo {0} no es válido.")]
+        [Range(1, byte.MaxValue, ErrorMessage = "El campo {0} no es válido.")]
         public QuestionType Type { get; set; }
 
         public Guid AnswerId { get; set; }
