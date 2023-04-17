@@ -96,14 +96,14 @@ else
     private async Task ShowModal(Guid id, bool isEdit = false)
     {
         IModalReference modalReference;
-
+        var modalOptions = new ModalOptions() { Size = ModalSize.Large};
         if (isEdit)
         {
-            modalReference = Modal.Show<QuestionEdit>(string.Empty, new ModalParameters().Add("QuestionId", id));
+            modalReference = Modal.Show<QuestionEdit>(string.Empty, new ModalParameters().Add("QuestionId", id), modalOptions);
         }
         else
         {
-            modalReference = Modal.Show<QuestionCreate>(string.Empty, new ModalParameters().Add("AnswerId", id));
+            modalReference = Modal.Show<QuestionCreate>(string.Empty, new ModalParameters().Add("AnswerId", id), modalOptions);
         }
 
         var result = await modalReference.Result;

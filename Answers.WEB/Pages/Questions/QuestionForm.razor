@@ -1,13 +1,15 @@
 ﻿@inject SweetAlertService sweetAlertService
-
+@using Answers.WEB.Pages.Questionnaires;
 <NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
 
 <EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
+    <div class="row">
+    <div class="col">
     <div class="mb-3">
         <label>Pregunta:</label>
         <div>
-            <InputTextArea class="form-control" @bind-Value="@Question.Name" rows="4"/> 
+            <InputTextArea class="form-control" @bind-Value="@Question.Name" rows="4" />
             <ValidationMessage For="@(() => Question.Name)" />
         </div>
     </div>
@@ -16,14 +18,24 @@
         <div>
             <select class="form-select" @bind="@Question.Type">
                 <option value="0">-- Seleccione un tipo--</option>
-                @foreach (QuestionType type in Enum.GetValues(typeof(QuestionType)))
-                {
-                    <option value="@type" selected="@(type == Question.Type)">@Enum.GetName(typeof(QuestionType),type)</option>
-                }
+                        @foreach (QuestionType type in Enum.GetValues(typeof(QuestionType)))
+                        {
+                                <option value="@type" selected="@(type == Question.Type)">@Enum.GetName(typeof(QuestionType),type)</option>
+                        }
             </select>
             <ValidationMessage For="@(() => Question.Type)" />
         </div>
     </div>
+    </div>
+        @if (Question.Type is QuestionType.Choice or QuestionType.Multiple)
+        {
+                <div class="col">
+                    <div class="mb-3">
+                        <QuestionnaireFormArray Question="Question"></QuestionnaireFormArray>
+                    </div>
+                </div>
+        }
+        </div>
 
     <button class="btn btn-primary" type="submit">Guardar Cambios</button>
     <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
