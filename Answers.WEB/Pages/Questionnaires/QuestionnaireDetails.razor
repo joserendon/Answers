@@ -1,11 +1,11 @@
-﻿@page "/answers/details/{Id:guid}"
+﻿@page "/questionnaires/details/{Id:guid}" 
 @using Answers.WEB.Pages.Questions;
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
 @attribute [Authorize(Roles = "Admin")]
 
-@if (answer is null)
+@if (questionnaire is null)
 {
     <div class="spinner" />
 }
@@ -14,9 +14,9 @@ else
     <div class="card">
         <div class="card-header">
             <span>
-                <i class="oi oi-globe"></i> @answer.Title
-                <a class="btn btn-sm btn-primary float-end" @onclick=@(() => ShowModal(answer.Id))><i class="oi oi-plus"></i> Nueva Pregunta</a>
-                <a class="btn btn-sm btn-success float-end mx-2" href="/answers"><i class="oi oi-arrow-thick-left"></i> Regresar</a>
+                <i class="oi oi-globe"></i> @questionnaire.Title
+                <a class="btn btn-sm btn-primary float-end" @onclick=@(() => ShowModal(questionnaire.Id))><i class="oi oi-plus"></i> Nueva Pregunta</a>
+                <a class="btn btn-sm btn-success float-end mx-2" href="/questionnaires"><i class="oi oi-arrow-thick-left"></i> Regresar</a>
             </span>
         </div>
         <div class="card-body">
@@ -68,7 +68,7 @@ else
 }
 
 @code {
-    private Answer? answer;
+    private Questionnaire? questionnaire;
     private List<Question>? questions;
     private int currentPage = 1;
     private int totalPages;
@@ -103,7 +103,7 @@ else
         }
         else
         {
-            modalReference = Modal.Show<QuestionCreate>(string.Empty, new ModalParameters().Add("AnswerId", id), modalOptions);
+            modalReference = Modal.Show<QuestionCreate>(string.Empty, new ModalParameters().Add("QuestionnaireId", id), modalOptions);
         }
 
         var result = await modalReference.Result;
@@ -140,10 +140,10 @@ else
             url2 = $"api/questions/totalPages?Id_Guid={Id}&filter={Filter}";
         }
 
-        var responseHppt1 = await repository.Get<Answer>($"api/answers/{Id}");
+        var responseHppt1 = await repository.Get<Questionnaire>($"api/questionnaires/{Id}");
         var responseHppt2 = await repository.Get<List<Question>>(url1);
         var responseHppt3 = await repository.Get<int>(url2);
-        answer = responseHppt1.Response;
+        questionnaire = responseHppt1.Response;
         questions = responseHppt2.Response;
         totalPages = responseHppt3.Response;
     }

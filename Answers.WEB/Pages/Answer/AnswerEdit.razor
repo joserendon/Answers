@@ -1,14 +1,14 @@
-﻿@page "/answers/edit/{Id:guid}"
+﻿@page "/answers/edit/{AnswerId:guid}"
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
 @attribute [Authorize(Roles = "Admin")]
 
-<h3>Editar País</h3>
+<h3>Editar Respuesta</h3>
 
 @if (answer is null)
 {
-    <div class="spinner" />
+    <div class="spinner"/>
 }
 else
 {
@@ -19,15 +19,15 @@ else
     private Answer? answer;
     private AnswerForm? answerForm;
 
+    [Parameter]
+    public Guid AnswerId { get; set; }
+
     [CascadingParameter]
     BlazoredModalInstance BlazoredModal { get; set; } = default!;
 
-    [Parameter]
-    public Guid Id { get; set; }
-
     protected override async Task OnInitializedAsync()
     {
-        var responseHttp = await repository.Get<Answer>($"/api/answers/{Id}");
+        var responseHttp = await repository.Get<Answer>($"/api/answers/{AnswerId}");
         if (responseHttp.Error)
         {
             if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
@@ -61,6 +61,6 @@ else
     private void Return()
     {
         answerForm!.FormPostedSuccessfully = true;
-        navigationManager.NavigateTo("/answers");
+        navigationManager.NavigateTo($"/questions/details/{answer!.QuestionId}");
     }
 }

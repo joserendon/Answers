@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Answers.API.Migrations
 {
     /// <inheritdoc />
-    public partial class addTablesConfigAnswers_Questions_Questionaire : Migration
+    public partial class addTablesConfig_Questionnaire_Question_Answer : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Answers",
+                name: "Questionnaires",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -20,7 +20,7 @@ namespace Answers.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Answers", x => x.Id);
+                    table.PrimaryKey("PK_Questionnaires", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -30,21 +30,21 @@ namespace Answers.API.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     Type = table.Column<byte>(type: "tinyint", nullable: false),
-                    AnswerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    QuestionnaireId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Questions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Questions_Answers_AnswerId",
-                        column: x => x.AnswerId,
-                        principalTable: "Answers",
+                        name: "FK_Questions_Questionnaires_QuestionnaireId",
+                        column: x => x.QuestionnaireId,
+                        principalTable: "Questionnaires",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Questionnaires",
+                name: "Answers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -53,9 +53,9 @@ namespace Answers.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Questionnaires", x => x.Id);
+                    table.PrimaryKey("PK_Answers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Questionnaires_Questions_QuestionId",
+                        name: "FK_Answers_Questions_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Questions",
                         principalColumn: "Id",
@@ -63,21 +63,21 @@ namespace Answers.API.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Answers_Title",
+                name: "IX_Answers_QuestionId_Name",
                 table: "Answers",
-                column: "Title",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Questionnaires_QuestionId_Name",
-                table: "Questionnaires",
                 columns: new[] { "QuestionId", "Name" },
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Questions_AnswerId_Name",
+                name: "IX_Questionnaires_Title",
+                table: "Questionnaires",
+                column: "Title",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questions_QuestionnaireId_Name",
                 table: "Questions",
-                columns: new[] { "AnswerId", "Name" },
+                columns: new[] { "QuestionnaireId", "Name" },
                 unique: true);
         }
 
@@ -85,13 +85,13 @@ namespace Answers.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Questionnaires");
+                name: "Answers");
 
             migrationBuilder.DropTable(
                 name: "Questions");
 
             migrationBuilder.DropTable(
-                name: "Answers");
+                name: "Questionnaires");
         }
     }
 }

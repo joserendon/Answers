@@ -19,4 +19,8 @@
     <ProjectReference Include="..\Answers.Shared\Answers.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Answer\" />
+  </ItemGroup>
+
 </Project>

@@ -4,17 +4,17 @@
 <div class="card">
     <div class="card-header">
         <span>
-            <i class="oi oi-globe"></i> Respuestas (@Question.Questionnaires?.Count)
+            <i class="oi oi-globe"></i> Respuestas (@Question.Answers?.Count)
             <button type="button" class="btn btn-sm btn-primary float-end" @onclick="()=> AddQuestionnaire()"><i class="oi oi-plus"></i> Adicionar</button>
         </span>
     </div>
     <div class="card-body overflow-auto" style="max-height:30vh">
-        @if (Question.Questionnaires is not null)
+        @if (Question.Answers is not null)
         {
             <EditForm EditContext="editContext">
                 <DataAnnotationsValidator />
                 <ValidationSummary></ValidationSummary>
-                @foreach (var questionnaire in Question.Questionnaires)
+                @foreach (var questionnaire in Question.Answers)
                 {
                     <div class="mb-3">
                         <label>@questionnaire.Name</label>
@@ -41,10 +41,10 @@
 
     protected override void OnInitialized()
     {
-        InitQuestionnairesValid();
+        InitAnswersValid();
 
-        editContext = new(Question.Questionnaires!);
-    }
+        editContext = new(Question.Answers!);
+    } 
 
     private async Task OnBeforeInternalNavigation(LocationChangingContext context)
     {
@@ -72,17 +72,17 @@
 
         context.PreventNavigation();
     }
-    private void InitQuestionnairesValid()
+    private void InitAnswersValid()
     {
 
-        if (Question.Questionnaires is null)
+        if (Question.Answers is null)
         {
-            Question.Questionnaires = new List<Questionnaire>();
+            Question.Answers = new List<Answer>();
             AddQuestionnaire();
         }
     }
     private void AddQuestionnaire()
     {
-        Question.Questionnaires!.Add(new Questionnaire());
+        Question.Answers!.Add(new Answer());
     }
 }

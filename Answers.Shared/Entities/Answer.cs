@@ -7,12 +7,12 @@ namespace Answers.Shared.Entities
         [Key]
         public Guid Id { get; set; }
 
-        [Display(Name = "Título")]
+        [Display(Name = "Posible Respuesta")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        [MaxLength(100, ErrorMessage = "El campo {0} no puede tener más de {1} caractéres")]
-        public string Title { get; set; } = null!;
+        [MaxLength(150, ErrorMessage = "El campo {0} no puede tener más de {1} caractéres")]
+        public string Name { get; set; } = null!;
 
-        public ICollection<Question>? Questions { get; set; }
-        public int QuestionsNumber => Questions == null ? 0 : Questions.Count;
+        public Guid QuestionId { get; set; }
+        public Question? Question { get; set; }
     }
 }

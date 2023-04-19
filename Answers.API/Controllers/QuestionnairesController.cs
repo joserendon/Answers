@@ -22,43 +22,34 @@ namespace Answers.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("combo/{questionId:guid}")]
-        public async Task<ActionResult> GetCombo(Guid questionId)
+        [HttpGet("combo")]
+        public async Task<ActionResult> GetCombo()
         {
-            return Ok(await _context.Questionnaires
-                .Where(x => x.QuestionId == questionId)
-                .ToListAsync());
+            return Ok(await _context.Questionnaires.ToListAsync());
         }
 
         [HttpGet]
-        public async Task<ActionResult> Get([FromQuery] PaginationDTO pagination)
+        public async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
             var queryable = _context.Questionnaires
-                .Where(x => x.Question!.Id == pagination.Id_Guid)
-                .AsQueryable();
+                            .Include(x => x.Questions).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
-                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+                queryable = queryable.Where(x => x.Title.ToLower().Contains(pagination.Filter.ToLower()));
             }
 
-            return Ok(await queryable
-                .OrderBy(x => x.Name)
-                .Paginate(pagination)
-                .ToListAsync());
+            return Ok(await queryable.OrderBy(x => x.Title).Paginate(pagination).ToListAsync());
         }
-
 
         [HttpGet("totalPages")]
         public async Task<ActionResult> GetPages([FromQuery] PaginationDTO pagination)
         {
-            var queryable = _context.Questionnaires
-                .Where(x => x.Question!.Id == pagination.Id_Guid)
-                .AsQueryable();
+            var queryable = _context.Questionnaires.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
-                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
+                queryable = queryable.Where(x => x.Title.ToLower().Contains(pagination.Filter.ToLower()));
             }
 
             double count = await queryable.CountAsync();
@@ -66,10 +57,22 @@ namespace Answers.API.Controllers
             return Ok(totalPages);
         }
 
+        [HttpGet("full")]
+        public async Task<IActionResult> GetFullAsync()
+        {
+            return Ok(await _context.Questionnaires
+                                    .Include(x => x.Questions!)
+                                    .ThenInclude(x => x.Answers)
+                                    .ToListAsync());
+        }
+
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetAsync(Guid id)
         {
-            var questionnaire = await _context.Questionnaires.FirstOrDefaultAsync(x => x.Id == id);
+            var questionnaire = await _context.Questionnaires
+                                              .Include(x => x.Questions!)
+                                              .ThenInclude(x => x.Answers)
+                                              .FirstOrDefaultAsync(x => x.Id == id);
             if (questionnaire == null)
             {
                 return NotFound();

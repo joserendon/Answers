@@ -32,7 +32,7 @@ else
         {
             if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
             {
-                navigationManager.NavigateTo("/answers");
+                navigationManager.NavigateTo("/questionnaires");
                 return;
             }
 
@@ -61,6 +61,6 @@ else
     private void Return()
     {
         questionForm!.FormPostedSuccessfully = true;
-        navigationManager.NavigateTo($"/answers/details/{question!.AnswerId}");
+        navigationManager.NavigateTo($"/questionnaires/details/{question!.QuestionnaireId}");
     }
 }

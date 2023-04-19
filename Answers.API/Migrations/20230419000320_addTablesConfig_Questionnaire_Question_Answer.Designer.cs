@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Answers.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230408215202_addTablesConfigAnswers_Questions_Questionaire")]
-    partial class addTablesConfigAnswers_Questions_Questionaire
+    [Migration("20230419000320_addTablesConfig_Questionnaire_Question_Answer")]
+    partial class addTablesConfig_Questionnaire_Question_Answer
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,14 +31,17 @@ namespace Answers.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<Guid>("QuestionId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Title")
+                    b.HasIndex("QuestionId", "Name")
                         .IsUnique();
 
                     b.ToTable("Answers");
@@ -95,20 +98,20 @@ namespace Answers.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AnswerId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
+
+                    b.Property<Guid>("QuestionnaireId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<byte>("Type")
                         .HasColumnType("tinyint");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AnswerId", "Name")
+                    b.HasIndex("QuestionnaireId", "Name")
                         .IsUnique();
 
                     b.ToTable("Questions");
@@ -120,17 +123,14 @@ namespace Answers.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<Guid>("QuestionId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionId", "Name")
+                    b.HasIndex("Title")
                         .IsUnique();
 
                     b.ToTable("Questionnaires");
@@ -388,6 +388,17 @@ namespace Answers.API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Answers.Shared.Entities.Answer", b =>
+                {
+                    b.HasOne("Answers.Shared.Entities.Question", "Question")
+                        .WithMany("Answers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Question");
+                });
+
             modelBuilder.Entity("Answers.Shared.Entities.City", b =>
                 {
                     b.HasOne("Answers.Shared.Entities.State", "State")
@@ -401,24 +412,13 @@ namespace Answers.API.Migrations
 
             modelBuilder.Entity("Answers.Shared.Entities.Question", b =>
                 {
-                    b.HasOne("Answers.Shared.Entities.Answer", "Answer")
+                    b.HasOne("Answers.Shared.Entities.Questionnaire", "Questionnaire")
                         .WithMany("Questions")
-                        .HasForeignKey("AnswerId")
+                        .HasForeignKey("QuestionnaireId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Answer");
-                });
-
-            modelBuilder.Entity("Answers.Shared.Entities.Questionnaire", b =>
-                {
-                    b.HasOne("Answers.Shared.Entities.Question", "Question")
-                        .WithMany("Questionnaires")
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Question");
+                    b.Navigation("Questionnaire");
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.State", b =>
@@ -494,11 +494,6 @@ namespace Answers.API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Answers.Shared.Entities.Answer", b =>
-                {
-                    b.Navigation("Questions");
-                });
-
             modelBuilder.Entity("Answers.Shared.Entities.City", b =>
                 {
                     b.Navigation("Users");
@@ -511,7 +506,12 @@ namespace Answers.API.Migrations
 
             modelBuilder.Entity("Answers.Shared.Entities.Question", b =>
                 {
-                    b.Navigation("Questionnaires");
+                    b.Navigation("Answers");
+                });
+
+            modelBuilder.Entity("Answers.Shared.Entities.Questionnaire", b =>
+                {
+                    b.Navigation("Questions");
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.State", b =>
