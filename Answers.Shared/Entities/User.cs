@@ -34,8 +34,6 @@ namespace Answers.Shared.Entities
 
         public City? City { get; set; }
 
-        public ICollection<Schecule>? TemporalSchedules { get; set; }
-
         [Display(Name = "Ciudad")]
         [Range(1, int.MaxValue, ErrorMessage = "Debes seleccionar una {0}.")]
         public int CityId { get; set; }

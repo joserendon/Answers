@@ -1,13 +1,8 @@
-﻿using Prometheus;
-using System.Collections;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Data.SqlTypes;
-using System.Numerics;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Answers.Shared.Entities
 {
-    public class Schecule
+    public class Schedule
     {
         public Guid Id { get; set; }
 
@@ -21,13 +16,16 @@ namespace Answers.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [MaxLength(2000, ErrorMessage = "El campo {0} no puede tener más de {1} caractéres")]
 
-        public DataSetDateTime? StardDate { get; set; }
+        public string Description { get; set; } = null!;
+        public DateTime? StardDate { get; set; }
 
-        public DataSetDateTime? EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
-        public bool? IsActive { get; set; }
+        public bool IsActive { get; set; }
 
-        public Questionnaire? QuestionnaireId { get; set; }
+        public Questionnaire? Questionnaire { get; set; }
+
+        public Guid QuestionnaireId { get; set; }
 
     }
 }

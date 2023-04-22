@@ -161,16 +161,21 @@ namespace Answers.API.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Answers.Shared.Entities.Schecule", b =>
+            modelBuilder.Entity("Answers.Shared.Entities.Schedule", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int?>("EndDate")
-                        .HasColumnType("int");
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
-                    b.Property<bool?>("IsActive")
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
@@ -178,23 +183,21 @@ namespace Answers.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid?>("QuestionnaireIdId")
+                    b.Property<Guid>("QuestionnaireId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("StardDate")
-                        .HasMaxLength(2000)
-                        .HasColumnType("int");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<DateTime?>("StardDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionnaireIdId");
+                    b.HasIndex("QuestionnaireId")
+                        .IsUnique();
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("Name", "Description")
+                        .IsUnique();
 
-                    b.ToTable("TemporalSchedules");
+                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.State", b =>
@@ -454,17 +457,15 @@ namespace Answers.API.Migrations
                     b.Navigation("Questionnaire");
                 });
 
-            modelBuilder.Entity("Answers.Shared.Entities.Schecule", b =>
+            modelBuilder.Entity("Answers.Shared.Entities.Schedule", b =>
                 {
-                    b.HasOne("Answers.Shared.Entities.Questionnaire", "QuestionnaireId")
-                        .WithMany("TemporalSchedules")
-                        .HasForeignKey("QuestionnaireIdId");
+                    b.HasOne("Answers.Shared.Entities.Questionnaire", "Questionnaire")
+                        .WithOne()
+                        .HasForeignKey("Answers.Shared.Entities.Schedule", "QuestionnaireId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("Answers.Shared.Entities.User", null)
-                        .WithMany("TemporalSchedules")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("QuestionnaireId");
+                    b.Navigation("Questionnaire");
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.State", b =>
@@ -558,18 +559,11 @@ namespace Answers.API.Migrations
             modelBuilder.Entity("Answers.Shared.Entities.Questionnaire", b =>
                 {
                     b.Navigation("Questions");
-
-                    b.Navigation("TemporalSchedules");
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.State", b =>
                 {
                     b.Navigation("Cities");
-                });
-
-            modelBuilder.Entity("Answers.Shared.Entities.User", b =>
-                {
-                    b.Navigation("TemporalSchedules");
                 });
 #pragma warning restore 612, 618
         }
