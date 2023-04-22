@@ -1,10 +1,10 @@
-﻿@page "/answers/create"
+﻿@page "/answers/create/{QuestionId:guid}"
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
 @attribute [Authorize(Roles = "Admin")]
 
-<h3>Crear Cuestionario</h3>
+<h3>Crear Respuesta</h3>
 
 <AnswerForm @ref="answerForm" Answer="answer" OnValidSubmit="CreateAsync" ReturnAction="Return" />
 
@@ -12,11 +12,15 @@
     private Answer answer = new();
     private AnswerForm? answerForm;
 
+    [Parameter]
+    public Guid QuestionId { get; set; }
+
     [CascadingParameter]
     BlazoredModalInstance BlazoredModal { get; set; } = default!;
 
     private async Task CreateAsync()
     {
+        answer.QuestionId = QuestionId;
         var httpResponse = await repository.Post("/api/answers", answer);
         if (httpResponse.Error)
         {
@@ -32,6 +36,6 @@
     private void Return()
     {
         answerForm!.FormPostedSuccessfully = true;
-        navigationManager.NavigateTo("/answers");
+        navigationManager.NavigateTo($"/questions/details/{QuestionId}");
     }
 }

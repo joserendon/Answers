@@ -2,6 +2,7 @@
 using Answers.API.Helpers;
 using Answers.Shared.DTOs;
 using Answers.Shared.Entities;
+using Answers.Shared.Enums;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,38 +23,36 @@ namespace Answers.API.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("combo/{answerId:guid}")]
-        public async Task<ActionResult> GetCombo(Guid answerId)
+        [HttpGet("combo/{questionnaireId:guid}")]
+        public async Task<ActionResult> GetCombo(Guid questionnaireId)
         {
             return Ok(await _context.Questions
-                .Where(x => x.AnswerId == answerId)
-                .ToListAsync());
+                                    .Where(x => x.QuestionnaireId == questionnaireId)
+                                    .ToListAsync());
         }
         [HttpGet]
         public async Task<ActionResult> Get([FromQuery] PaginationDTO pagination)
         {
             var queryable = _context.Questions
-                .Include(x => x.Questionnaires)
-                .Where(x => x.Answer!.Id == pagination.Id_Guid)
-                .AsQueryable();
+                                    .Include(x => x.Answers)
+                                    .Where(x => x.Questionnaire!.Id == pagination.Id_Guid)
+                                    .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
                 queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
             }
 
-            return Ok(await queryable
-                .OrderBy(x => x.Name)
-                .Paginate(pagination)
-                .ToListAsync());
+            return Ok(await queryable.OrderBy(x => x.Name)
+                                     .Paginate(pagination)
+                                     .ToListAsync());
         }
 
         [HttpGet("totalPages")]
         public async Task<ActionResult> GetPages([FromQuery] PaginationDTO pagination)
         {
-            var queryable = _context.Questions
-                .Where(x => x.Answer!.Id == pagination.Id_Guid)
-                .AsQueryable();
+            var queryable = _context.Questions.Where(x => x.Questionnaire!.Id == pagination.Id_Guid)
+                                              .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
@@ -69,7 +68,7 @@ namespace Answers.API.Controllers
         public async Task<IActionResult> GetAsync(Guid id)
         {
             var question = await _context.Questions
-                .Include(x => x.Questionnaires)
+                .Include(x => x.Answers)
                 .FirstOrDefaultAsync(x => x.Id == id);
             if (question == null)
             {
@@ -84,6 +83,9 @@ namespace Answers.API.Controllers
         {
             _context.Add(question);
             await _context.SaveChangesAsync();
+
+            await RemoveAnswersInTypeOpen(question);
+
             return Ok(question);
         }
 
@@ -92,6 +94,9 @@ namespace Answers.API.Controllers
         {
             _context.Update(question);
             await _context.SaveChangesAsync();
+
+            await RemoveAnswersInTypeOpen(question);
+
             return Ok(question);
         }
 
@@ -108,5 +113,14 @@ namespace Answers.API.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        private async Task RemoveAnswersInTypeOpen(Question question)
+        {
+            if (question.Type is QuestionType.Open)
+            {
+                await _context.Answers.Where(answers => answers.QuestionId == question.Id).ExecuteDeleteAsync();
+            }
+        }
+
     }
 }

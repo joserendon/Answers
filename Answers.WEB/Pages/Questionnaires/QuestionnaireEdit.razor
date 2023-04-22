@@ -1,14 +1,14 @@
-﻿@page "/questionnaires/edit/{QuestionnaireId:guid}"
+﻿@page "/questionnaires/edit/{Id:guid}"
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
 @attribute [Authorize(Roles = "Admin")]
 
-<h3>Editar Respuesta</h3>
+<h3>Editar País</h3>
 
 @if (questionnaire is null)
 {
-    <div class="spinner"/>
+    <div class="spinner" />
 }
 else
 {
@@ -19,20 +19,20 @@ else
     private Questionnaire? questionnaire;
     private QuestionnaireForm? questionnaireForm;
 
-    [Parameter]
-    public Guid QuestionnaireId { get; set; }
-
     [CascadingParameter]
     BlazoredModalInstance BlazoredModal { get; set; } = default!;
 
+    [Parameter]
+    public Guid Id { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        var responseHttp = await repository.Get<Questionnaire>($"/api/questionnaires/{QuestionnaireId}");
+        var responseHttp = await repository.Get<Questionnaire>($"/api/questionnaires/{Id}");
         if (responseHttp.Error)
         {
             if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
             {
-                navigationManager.NavigateTo("/answers");
+                navigationManager.NavigateTo("/questionnaires");
                 return;
             }
 
@@ -61,6 +61,6 @@ else
     private void Return()
     {
         questionnaireForm!.FormPostedSuccessfully = true;
-        navigationManager.NavigateTo($"/questions/details/{questionnaire!.QuestionId}");
+        navigationManager.NavigateTo("/questionnaires");
     }
 }

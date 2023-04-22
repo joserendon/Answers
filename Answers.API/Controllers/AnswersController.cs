@@ -21,39 +21,31 @@ namespace Answers.API.Controllers
             _context = context;
         }
 
-        [AllowAnonymous]
-        [HttpGet("combo")]
-        public async Task<ActionResult> GetCombo()
-        {
-            return Ok(await _context.Answers.ToListAsync());
-        }
-
         [HttpGet]
-        public async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        public async Task<ActionResult> Get([FromQuery] PaginationDTO pagination)
         {
-            var queryable = _context.Answers
-                .Include(x => x.Questions)
-                .AsQueryable();
+            var queryable = _context.Answers.Where(x => x.Question!.Id == pagination.Id_Guid)
+                                            .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
-                queryable = queryable.Where(x => x.Title.ToLower().Contains(pagination.Filter.ToLower()));
+                queryable = queryable.Where(x => x.Name.ToLower()
+                                     .Contains(pagination.Filter.ToLower()));
             }
 
-            return Ok(await queryable
-                .OrderBy(x => x.Title)
-                .Paginate(pagination)
-                .ToListAsync());
+            return Ok(await queryable.OrderBy(x => x.Name).Paginate(pagination).ToListAsync());
         }
+
 
         [HttpGet("totalPages")]
         public async Task<ActionResult> GetPages([FromQuery] PaginationDTO pagination)
         {
-            var queryable = _context.Answers.AsQueryable();
+            var queryable = _context.Answers.Where(x => x.Question!.Id == pagination.Id_Guid)
+                                            .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
-                queryable = queryable.Where(x => x.Title.ToLower().Contains(pagination.Filter.ToLower()));
+                queryable = queryable.Where(x => x.Name.ToLower().Contains(pagination.Filter.ToLower()));
             }
 
             double count = await queryable.CountAsync();
@@ -61,22 +53,10 @@ namespace Answers.API.Controllers
             return Ok(totalPages);
         }
 
-        [HttpGet("full")]
-        public async Task<IActionResult> GetFullAsync()
-        {
-            return Ok(await _context.Answers
-                .Include(x => x.Questions!)
-                .ThenInclude(x => x.Questionnaires)
-                .ToListAsync());
-        }
-
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetAsync(Guid id)
         {
-            var answer = await _context.Answers
-                .Include(x => x.Questions!)
-                .ThenInclude(x => x.Questionnaires)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            var answer = await _context.Answers.FirstOrDefaultAsync(x => x.Id == id);
             if (answer == null)
             {
                 return NotFound();

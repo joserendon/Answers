@@ -19,10 +19,10 @@ namespace Answers.Shared.Entities
         [Range(1, byte.MaxValue, ErrorMessage = "El campo {0} no es válido.")]
         public QuestionType Type { get; set; }
 
-        public Guid AnswerId { get; set; }
-        public Answer? Answer { get; set; }
+        public Guid QuestionnaireId { get; set; }
+        public Questionnaire? Questionnaire { get; set; }
 
-        public ICollection<Questionnaire>? Questionnaires { get; set; }
-        public int QuestionnaireNumber => Questionnaires == null ? 0 : Questionnaires.Count;
+        public ICollection<Answer>? Answers { get; set; }
+        public int QuestionnaireNumber => Answers == null ? 0 : Answers.Count;
     }
 }

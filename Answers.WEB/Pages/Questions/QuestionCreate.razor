@@ -1,4 +1,4 @@
-﻿@page "/questions/create/{AnswerId:guid}"
+﻿@page "/questions/create/{QuestionnaireId:guid}"
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
@@ -16,12 +16,12 @@
     BlazoredModalInstance BlazoredModal { get; set; } = default!;
 
     [Parameter]
-    public Guid AnswerId { get; set; }
+    public Guid QuestionnaireId { get; set; }
 
     private async Task CreateAsync()
     {
 
-        question.AnswerId = AnswerId;
+        question.QuestionnaireId = QuestionnaireId;
         var httpResponse = await repository.Post("/api/questions", question);
         if (httpResponse.Error)
         {
@@ -37,6 +37,6 @@
     private void Return()
     {
         questionForm!.FormPostedSuccessfully = true;
-        navigationManager.NavigateTo($"/answers/details/{AnswerId}");
+        navigationManager.NavigateTo($"/questionnaires/details/{QuestionnaireId}");
     }
 }
