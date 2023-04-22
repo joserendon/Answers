@@ -16,8 +16,6 @@ namespace Answers.Shared.Entities
         public ICollection<Question>? Questions { get; set; }
         public int QuestionsNumber => Questions == null ? 0 : Questions.Count;
 
-        public ICollection<TemporalSchedule>? TemporalSchedules { get; set; }
-
-        }
+        public ICollection<TemporalSchecule>? TemporalSchedules { get; set; }
     }
 }
