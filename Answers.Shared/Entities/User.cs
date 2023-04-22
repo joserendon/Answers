@@ -40,5 +40,7 @@ namespace Answers.Shared.Entities
 
         [Display(Name = "Usuario")]
         public string FullName => $"{FirstName} {LastName}";
+
+        public ICollection<TemporalSchedule>? TemporalSchedules { get; set; }
     }
 }
