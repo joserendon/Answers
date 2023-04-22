@@ -18,5 +18,6 @@ namespace Answers.Shared.Entities
 
         public ICollection<TemporalSchedule>? TemporalSchedules { get; set; }
 
+        }
     }
 }
