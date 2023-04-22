@@ -4,6 +4,7 @@ namespace Answers.Shared.Entities
 {
     public class Questionnaire
     {
+
         [Key]
         public Guid Id { get; set; }
 
@@ -17,6 +18,5 @@ namespace Answers.Shared.Entities
 
         public ICollection<TemporalSchedule>? TemporalSchedules { get; set; }
 
-        }
     }
 }
