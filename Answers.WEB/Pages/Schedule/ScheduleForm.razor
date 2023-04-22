@@ -1,0 +1,89 @@
+﻿@inject SweetAlertService sweetAlertService
+
+<NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation" />
+
+<EditForm EditContext="editContext" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="mb-3">
+        <label>Programacion:</label>
+        <div>
+            <InputTextArea class="form-control" @bind-Value="@Schedule.Name" rows="2" />
+            <ValidationMessage For="@(() => Schedule.Name)" />
+        </div>
+    </div>
+    <div class="mb-3">
+        <label>Description:</label>
+        <div>
+            <InputTextArea class="form-control" @bind-Value="@Schedule.Name" rows="3" />
+            <ValidationMessage For="@(() => Schedule.Description)" />
+        </div>
+    </div>
+    <div class="mb-3">
+        <div class="form-group">
+            <label for="fecha">Fecha:</label>
+            <input type="text" class="form-control datepicker" name="Fecha"/>
+        </div>
+    </div>
+    <button class="btn btn-primary" type="submit">Guardar Cambios</button>
+    <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
+</EditForm>
+
+<h3>ScheduleForm</h3>
+
+@code {
+    private EditContext editContext = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public Schedule Schedule { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback OnValidSubmit { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public EventCallback ReturnAction { get; set; }
+
+    public bool FormPostedSuccessfully { get; set; }
+
+    public bool ScheduleIsActive { get; set; }
+
+    protected override void OnInitialized()
+    {
+        editContext = new(Schedule);
+    }
+
+    private async Task ScheduleIsActiveChangedAsync(ChangeEventArgs e)
+    {
+        Schedule.IsActive = true;
+        await Task.CompletedTask;
+    }
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        var formWasMofied = editContext.IsModified();
+        if (!formWasMofied || FormPostedSuccessfully)
+        {
+            return;
+        }
+
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Deseas abandonar la página y perder los cambios?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true,
+                CancelButtonText = "No",
+                ConfirmButtonText = "Si"
+            });
+
+        var confirm = !string.IsNullOrEmpty(result.Value);
+        if (confirm)
+        {
+            return;
+        }
+
+        context.PreventNavigation();
+    }
+}

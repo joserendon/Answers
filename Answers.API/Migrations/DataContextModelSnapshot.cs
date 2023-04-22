@@ -189,6 +189,9 @@ namespace Answers.API.Migrations
                     b.Property<DateTime?>("StardDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("URLImage")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("QuestionnaireId")

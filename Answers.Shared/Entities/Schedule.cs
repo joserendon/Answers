@@ -27,5 +27,7 @@ namespace Answers.Shared.Entities
 
         public Guid QuestionnaireId { get; set; }
 
+        public string? URLImage { get; set;}
+
     }
 }

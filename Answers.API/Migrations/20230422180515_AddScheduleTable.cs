@@ -21,7 +21,8 @@ namespace Answers.API.Migrations
                     StardDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    QuestionnaireId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    QuestionnaireId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    URLImage = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

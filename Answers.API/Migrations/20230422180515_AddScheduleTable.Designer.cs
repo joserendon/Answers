@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Answers.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230422170622_AddScheduleTable")]
+    [Migration("20230422180515_AddScheduleTable")]
     partial class AddScheduleTable
     {
         /// <inheritdoc />
@@ -191,6 +191,9 @@ namespace Answers.API.Migrations
 
                     b.Property<DateTime?>("StardDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("URLImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
