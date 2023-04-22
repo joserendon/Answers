@@ -4,6 +4,7 @@ namespace Answers.Shared.Entities
 {
     public class Questionnaire
     {
+
         [Key]
         public Guid Id { get; set; }
 
