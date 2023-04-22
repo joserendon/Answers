@@ -1,6 +1,9 @@
 ﻿using Prometheus;
 using System.Collections;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
+using System.Data.SqlTypes;
+using System.Numerics;
 
 namespace Answers.Shared.Entities
 {
@@ -18,11 +21,11 @@ namespace Answers.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         [MaxLength(2000, ErrorMessage = "El campo {0} no puede tener más de {1} caractéres")]
 
-        public DateOnly? StardDate { get; set; }
+        public DataSetDateTime? StardDate { get; set; }
 
-        public DateOnly? EndDate { get; set; }
+        public DataSetDateTime? EndDate { get; set; }
 
-        public BitArray? UserId { get; set; }
+        public bool? IsActive { get; set; }
 
         public Questionnaire? QuestionnaireId { get; set; }
 
