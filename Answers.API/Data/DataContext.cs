@@ -20,7 +20,7 @@ namespace Answers.API.Data
         public DbSet<Questionnaire> Questionnaires { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
-        public DbSet<TemporalSchecule> TemporalSchedules { get; set; }
+        public DbSet<Schecule> TemporalSchedules { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
