@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Answers.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230423040817_AddScheduleTable")]
+    [Migration("20230423134728_AddScheduleTable")]
     partial class AddScheduleTable
     {
         /// <inheritdoc />
@@ -179,6 +179,7 @@ namespace Answers.API.Migrations
                         .HasColumnType("nvarchar(2000)");
 
                     b.Property<DateTime?>("EndDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
@@ -192,7 +193,8 @@ namespace Answers.API.Migrations
                     b.Property<Guid>("QuestionnaireId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("StardDate")
+                    b.Property<DateTime?>("StartDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("URLImage")

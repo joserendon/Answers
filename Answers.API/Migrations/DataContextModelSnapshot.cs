@@ -176,6 +176,7 @@ namespace Answers.API.Migrations
                         .HasColumnType("nvarchar(2000)");
 
                     b.Property<DateTime?>("EndDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsActive")
@@ -189,7 +190,8 @@ namespace Answers.API.Migrations
                     b.Property<Guid>("QuestionnaireId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("StardDate")
+                    b.Property<DateTime?>("StartDate")
+                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("URLImage")
