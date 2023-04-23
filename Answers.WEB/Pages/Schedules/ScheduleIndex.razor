@@ -13,8 +13,8 @@ else
     <div class="card">
         <div class="card-header">
             <span>
-                <i class="oi oi-globe"></i> Cuestionarios
-                <a class="btn btn-sm btn-primary float-end" @onclick="()=> ShowModal()"><i class="oi oi-plus"></i> Adicionar Cuestionario</a>
+                <i class="oi oi-globe"></i> Programaciones
+                <a class="btn btn-sm btn-primary float-end" @onclick="()=> ShowModal()"><i class="oi oi-plus"></i> Adicionar Programación</a>
             </span>
         </div>
         <div class="card-body">
@@ -37,8 +37,11 @@ else
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Cuestionarios</th>
-                                <th style="width:220px">Encuestas</th>
+                                <th style="width:320px">Nombre</th>
+                                <th style="width:120px">Fecha Inicio</th>
+                                <th style="width:120px">Fecha Fin</th>
+                                <th style="width:220px">Cuestionario</th>
+                                <th style="width:120px">Activa</th>
                                 <th style="width:260px">Acciones</th>
                             </tr>
                         </thead>
@@ -46,15 +49,11 @@ else
                             @foreach (var schedules in Schedules!)
                             {
                                 <tr>
-                                    <td>
-                                        @schedules.Name
-                                    </td>
-                                    <td>
-                                        @schedules.StartDate
-                                    </td>
-                                    <td>
-                                        @schedules.EndDate
-                                    </td>
+                                    <td>@schedules.Name</td>
+                                    <td>@schedules.StartDate!.Value.Date.ToShortDateString()</td>
+                                    <td>@schedules.EndDate!.Value.Date.ToShortDateString()</td>
+                                    <td>@schedules.Questionnaire?.Title</td>
+                                    <td><InputCheckbox @bind-Value="@schedules.IsActive" disabled="true" /></td>
                                     <td>
                                         <a href="/schedules/details/@schedules.Id" class="btn btn-info btn-sm"><i class="oi oi-list" /> Detalles</a>
                                         <a @onclick=@(() => ShowModal(id: schedules.Id, isEdit: true)) class="btn btn-warning btn-sm"><i class="oi oi-pencil" /> Editar</a>
@@ -125,11 +124,11 @@ else
         if (string.IsNullOrEmpty(Filter))
         {
             url1 = $"api/schedules?page={page}";
-            url2 = $"api/scheduless/totalPages";
+            url2 = $"api/schedules/totalPages";
         }
         else
         {
-            url1 = $"api/scheduless?page={page}&filter={Filter}";
+            url1 = $"api/schedules?page={page}&filter={Filter}";
             url2 = $"api/schedules/totalPages?filter={Filter}";
         }
 

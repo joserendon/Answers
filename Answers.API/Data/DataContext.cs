@@ -32,8 +32,9 @@ namespace Answers.API.Data
             modelBuilder.Entity<Questionnaire>().HasIndex(x => x.Title).IsUnique();
             modelBuilder.Entity<Question>().HasIndex(nameof(Question.QuestionnaireId), nameof(Question.Name)).IsUnique();
             modelBuilder.Entity<Answer>().HasIndex(nameof(Answer.QuestionId), nameof(Answer.Name)).IsUnique();
-            modelBuilder.Entity<Schedule>().HasIndex(nameof(Schedule.Name), nameof(Schedule.Description)).IsUnique();
-            modelBuilder.Entity<Schedule>().HasOne(Q => Q.Questionnaire).WithOne().HasForeignKey<Schedule>(x => x.QuestionnaireId).IsRequired(true).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Schedule>().HasIndex(nameof(Schedule.QuestionnaireId), nameof(Schedule.Name), nameof(Schedule.StartDate)).IsUnique();
+            modelBuilder.Entity<Schedule>().HasOne(Q => Q.Questionnaire).WithOne().HasForeignKey<Schedule>(x => x.QuestionnaireId).IsRequired().OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Schedule>().HasIndex(x => x.QuestionnaireId).IsUnique(false);
         }
     }
 }

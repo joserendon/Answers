@@ -120,9 +120,6 @@ namespace Answers.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -172,8 +169,8 @@ namespace Answers.API.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime?>("EndDate")
                         .IsRequired()
@@ -187,7 +184,8 @@ namespace Answers.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("QuestionnaireId")
+                    b.Property<Guid?>("QuestionnaireId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("StartDate")
@@ -199,10 +197,9 @@ namespace Answers.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionnaireId")
-                        .IsUnique();
+                    b.HasIndex("QuestionnaireId");
 
-                    b.HasIndex("Name", "Description")
+                    b.HasIndex("QuestionnaireId", "Name", "StartDate")
                         .IsUnique();
 
                     b.ToTable("Schedules");

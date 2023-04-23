@@ -13,7 +13,7 @@ namespace Answers.Shared.Entities
 
         [Display(Description = "Detalle")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
-        [MaxLength(2000, ErrorMessage = "El campo {0} no puede tener más de {1} caractéres")]
+        [MaxLength(1000, ErrorMessage = "El campo {0} no puede tener más de {1} caractéres")]
         public string Description { get; set; } = null!;
 
         [Display(Name = "Fecha Inicio")]
@@ -28,7 +28,9 @@ namespace Answers.Shared.Entities
 
         public Questionnaire? Questionnaire { get; set; }
 
-        public Guid QuestionnaireId { get; set; }
+        [Display(Name = "Cuestionario")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        public Guid? QuestionnaireId { get; set; }
 
         public string? URLImage { get; set; }
     }
