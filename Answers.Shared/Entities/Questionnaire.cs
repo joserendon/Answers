@@ -15,5 +15,8 @@ namespace Answers.Shared.Entities
 
         public ICollection<Question>? Questions { get; set; }
         public int QuestionsNumber => Questions == null ? 0 : Questions.Count;
+
+        [Display(Name = "Image")]
+        public string? Image { get; set; }
     }
 }

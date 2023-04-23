@@ -120,6 +120,9 @@ namespace Answers.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -188,6 +191,9 @@ namespace Answers.API.Migrations
 
                     b.Property<DateTime?>("StardDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("URLImage")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

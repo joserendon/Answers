@@ -11,6 +11,12 @@ namespace Answers.API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "Image",
+                table: "Questionnaires",
+                type: "nvarchar(max)",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "Schedules",
                 columns: table => new
@@ -21,7 +27,8 @@ namespace Answers.API.Migrations
                     StardDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    QuestionnaireId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    QuestionnaireId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    URLImage = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -52,6 +59,10 @@ namespace Answers.API.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Schedules");
+
+            migrationBuilder.DropColumn(
+                name: "Image",
+                table: "Questionnaires");
         }
     }
 }
