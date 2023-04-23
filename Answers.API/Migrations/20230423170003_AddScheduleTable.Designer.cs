@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Answers.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230423134728_AddScheduleTable")]
+    [Migration("20230423170003_AddScheduleTable")]
     partial class AddScheduleTable
     {
         /// <inheritdoc />
@@ -123,9 +123,6 @@ namespace Answers.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -175,8 +172,8 @@ namespace Answers.API.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime?>("EndDate")
                         .IsRequired()
@@ -190,7 +187,8 @@ namespace Answers.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("QuestionnaireId")
+                    b.Property<Guid?>("QuestionnaireId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("StartDate")
@@ -202,10 +200,7 @@ namespace Answers.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionnaireId")
-                        .IsUnique();
-
-                    b.HasIndex("Name", "Description")
+                    b.HasIndex("QuestionnaireId", "Name", "StartDate")
                         .IsUnique();
 
                     b.ToTable("Schedules");
@@ -471,9 +466,9 @@ namespace Answers.API.Migrations
             modelBuilder.Entity("Answers.Shared.Entities.Schedule", b =>
                 {
                     b.HasOne("Answers.Shared.Entities.Questionnaire", "Questionnaire")
-                        .WithOne()
-                        .HasForeignKey("Answers.Shared.Entities.Schedule", "QuestionnaireId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithMany("Schedules")
+                        .HasForeignKey("QuestionnaireId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Questionnaire");
@@ -570,6 +565,8 @@ namespace Answers.API.Migrations
             modelBuilder.Entity("Answers.Shared.Entities.Questionnaire", b =>
                 {
                     b.Navigation("Questions");
+
+                    b.Navigation("Schedules");
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.State", b =>

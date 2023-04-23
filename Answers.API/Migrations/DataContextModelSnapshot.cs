@@ -41,7 +41,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("QuestionId", "Name")
                         .IsUnique();
 
-                    b.ToTable("Answers");
+                    b.ToTable("Answers", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.City", b =>
@@ -65,7 +65,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("StateId", "Name")
                         .IsUnique();
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.Country", b =>
@@ -86,7 +86,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.Question", b =>
@@ -111,7 +111,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("QuestionnaireId", "Name")
                         .IsUnique();
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.Questionnaire", b =>
@@ -119,9 +119,6 @@ namespace Answers.API.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -133,7 +130,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("Title")
                         .IsUnique();
 
-                    b.ToTable("Questionnaires");
+                    b.ToTable("Questionnaires", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.Role", b =>
@@ -172,8 +169,8 @@ namespace Answers.API.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime?>("EndDate")
                         .IsRequired()
@@ -187,7 +184,8 @@ namespace Answers.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<Guid>("QuestionnaireId")
+                    b.Property<Guid?>("QuestionnaireId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime?>("StartDate")
@@ -199,13 +197,10 @@ namespace Answers.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionnaireId")
+                    b.HasIndex("QuestionnaireId", "Name", "StartDate")
                         .IsUnique();
 
-                    b.HasIndex("Name", "Description")
-                        .IsUnique();
-
-                    b.ToTable("Schedules");
+                    b.ToTable("Schedules", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.State", b =>
@@ -229,7 +224,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("CountryId", "Name")
                         .IsUnique();
 
-                    b.ToTable("States");
+                    b.ToTable("States", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.User", b =>
@@ -468,9 +463,9 @@ namespace Answers.API.Migrations
             modelBuilder.Entity("Answers.Shared.Entities.Schedule", b =>
                 {
                     b.HasOne("Answers.Shared.Entities.Questionnaire", "Questionnaire")
-                        .WithOne()
-                        .HasForeignKey("Answers.Shared.Entities.Schedule", "QuestionnaireId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithMany("Schedules")
+                        .HasForeignKey("QuestionnaireId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Questionnaire");
@@ -567,6 +562,8 @@ namespace Answers.API.Migrations
             modelBuilder.Entity("Answers.Shared.Entities.Questionnaire", b =>
                 {
                     b.Navigation("Questions");
+
+                    b.Navigation("Schedules");
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.State", b =>

@@ -29,11 +29,12 @@ namespace Answers.API.Controllers
         }
 
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
             var queryable = _context.Questionnaires
-                            .Include(x => x.Questions).AsQueryable();
+                            .Include(x => x.Questions)
+                            .Include(x => x.Schedules)
+                            .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
@@ -44,7 +45,6 @@ namespace Answers.API.Controllers
         }
 
         [HttpGet("totalPages")]
-        [AllowAnonymous]
         public async Task<ActionResult> GetPages([FromQuery] PaginationDTO pagination)
         {
             var queryable = _context.Questionnaires.AsQueryable();

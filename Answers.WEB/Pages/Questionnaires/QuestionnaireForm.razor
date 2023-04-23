@@ -10,9 +10,6 @@
             <InputTextArea class="form-control" @bind-Value="@Questionnaire.Title" rows="2" />
             <ValidationMessage For="@(() => Questionnaire.Title)"/>
         </div>
-        <div class="mb-3">
-            <InputImg Label="Image" ImageSelected="ImageSelected" ImageURL="@imageUrl" />
-        </div>
     </div>
     <button class="btn btn-primary" type="submit">Guardar Cambios</button>
     <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
@@ -20,7 +17,6 @@
 
 @code {
     private EditContext editContext = null!;
-    private string? imageUrl;
 
     [Parameter]
     [EditorRequired]
@@ -39,12 +35,6 @@
     protected override void OnInitialized()
     {
         editContext = new(Questionnaire);
-    }
-
-    private void ImageSelected(string imagenBase64)
-    {
-        Questionnaire.Image = imagenBase64;
-        imageUrl = null;
     }
 
     private async Task OnBeforeInternalNavigation(LocationChangingContext context)
