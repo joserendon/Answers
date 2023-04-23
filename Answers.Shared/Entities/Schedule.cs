@@ -4,6 +4,7 @@ namespace Answers.Shared.Entities
 {
     public class Schedule
     {
+        [Key]
         public Guid Id { get; set; }
 
         [Display(Name = "Nombre")]
@@ -25,12 +26,12 @@ namespace Answers.Shared.Entities
         public DateTime? EndDate { get; set; }
 
         public bool IsActive { get; set; }
+        public string? URLImage { get; set; }
+
 
         [Display(Name = "Cuestionario")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public Guid? QuestionnaireId { get; set; }
         public Questionnaire? Questionnaire { get; set; }
-
-        public string? URLImage { get; set; }
     }
 }

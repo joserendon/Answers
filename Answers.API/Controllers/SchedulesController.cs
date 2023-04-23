@@ -39,7 +39,6 @@ namespace Answers.API.Controllers
         {
             var queryable = _context.Schedules
                                     .Include(x => x.Questionnaire!)
-                                    .ThenInclude(q => q.Questions)
                                     .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
@@ -72,8 +71,9 @@ namespace Answers.API.Controllers
         public async Task<IActionResult> GetFullAsync()
         {
             return Ok(await _context.Schedules
-                                    //.Include(x => x.States!)
-                                    //.ThenInclude(x => x.Cities)
+                                    .Include(x => x.Questionnaire!)
+                                    .ThenInclude(x => x.Questions!)
+                                    .ThenInclude(x => x.Answers)
                                     .ToListAsync());
         }
 
@@ -81,8 +81,6 @@ namespace Answers.API.Controllers
         public async Task<IActionResult> GetAsync(Guid id)
         {
             var schedule = await _context.Schedules
-                                .Include(x => x.Questionnaire!)
-                                //.ThenInclude(x => x.Cities)
                                 .FirstOrDefaultAsync(x => x.Id == id);
             if (schedule == null)
             {

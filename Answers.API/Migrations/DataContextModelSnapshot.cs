@@ -41,7 +41,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("QuestionId", "Name")
                         .IsUnique();
 
-                    b.ToTable("Answers");
+                    b.ToTable("Answers", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.City", b =>
@@ -65,7 +65,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("StateId", "Name")
                         .IsUnique();
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.Country", b =>
@@ -86,7 +86,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.Question", b =>
@@ -111,7 +111,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("QuestionnaireId", "Name")
                         .IsUnique();
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.Questionnaire", b =>
@@ -130,7 +130,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("Title")
                         .IsUnique();
 
-                    b.ToTable("Questionnaires");
+                    b.ToTable("Questionnaires", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.Role", b =>
@@ -200,7 +200,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("QuestionnaireId", "Name", "StartDate")
                         .IsUnique();
 
-                    b.ToTable("Schedules");
+                    b.ToTable("Schedules", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.State", b =>
@@ -224,7 +224,7 @@ namespace Answers.API.Migrations
                     b.HasIndex("CountryId", "Name")
                         .IsUnique();
 
-                    b.ToTable("States");
+                    b.ToTable("States", (string)null);
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.User", b =>
