@@ -1,6 +1,7 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">Sales.WEB</a>
+        <a href=""> <img src="favicon.svg" width="40" height="40" alt="logo" class="rounded-circle"></a>
+        @*<a class="navbar-brand" href="">Answers</a>*@
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -11,12 +12,7 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
+                <span class="oi oi-home" aria-hidden="true"></span> Inicio
             </NavLink>
         </div>
         <AuthorizeView Roles="Admin">

@@ -23,4 +23,10 @@
     <Folder Include="Pages\Answer\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="wwwroot\favicon.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>

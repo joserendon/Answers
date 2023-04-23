@@ -1,0 +1,45 @@
+﻿@page "/notfound"
+
+<div class="container">
+    <h1>404</h1>
+    <p>Lo sentimos, la página que estás buscando no se encuentra.</p>    
+    <p>Puedes <a class="btn btn-sm btn-success" href="javascript:history.back()"><i class="oi oi-arrow-thick-left"></i> regresar a la página anterior</a> o <a class="btn btn-sm btn-primary" href="/"><i class="oi oi-home"></i> ir a la página principal</a></p>
+</div>
+
+<style>
+    body {
+        background-color: #f5f5f5;
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+
+    h1 {
+        font-size: 5em;
+        color: #777;
+        margin-top: 0.5em;
+    }
+
+    p {
+        font-size: 1.5em;
+        color: #999;
+    }
+
+    a {
+        color: #777;
+        text-decoration: none;
+    }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    .container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
