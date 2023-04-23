@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Answers.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230422180515_AddScheduleTable")]
+    [Migration("20230423040817_AddScheduleTable")]
     partial class AddScheduleTable
     {
         /// <inheritdoc />
@@ -122,6 +122,9 @@ namespace Answers.API.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()

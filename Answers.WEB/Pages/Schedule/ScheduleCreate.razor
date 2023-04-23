@@ -4,8 +4,34 @@
 @inject SweetAlertService sweetAlertService
 @attribute [Authorize(Roles = "Admin")]
 
-<h3>ScheduleCreate</h3>
+<h3>Crear programacion</h3>
+
+<ScheduleForm @ref="scheduleForm" Schedule="schedule" OnValidSubmit="CreateAsync" ReturnAction="Return" />
 
 @code {
+    private Schedule schedule = new();
+    private ScheduleForm? scheduleForm;
 
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    private async Task CreateAsync()
+    {
+        var httpResponse = await repository.Post("/api/schedules", schedule);
+        if (httpResponse.Error)
+        {
+            var message = await httpResponse.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
+        Return();
+    }
+
+    private void Return()
+    {
+        scheduleForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo("/schedules");
+    }
 }

@@ -11,6 +11,12 @@ namespace Answers.API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "Image",
+                table: "Questionnaires",
+                type: "nvarchar(max)",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "Schedules",
                 columns: table => new
@@ -53,6 +59,10 @@ namespace Answers.API.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Schedules");
+
+            migrationBuilder.DropColumn(
+                name: "Image",
+                table: "Questionnaires");
         }
     }
 }

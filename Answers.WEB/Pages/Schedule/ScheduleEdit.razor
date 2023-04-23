@@ -1,0 +1,66 @@
+﻿@page "/schedules/edit/{Id:guid}"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+@attribute [Authorize(Roles = "Admin")]
+
+<h3>Editar Cuestionario</h3>
+
+@if (schedule is null)
+{
+    <div class="spinner" />
+}
+else
+{
+    <ScheduleForm @ref="scheduleForm" Schedule="schedule" OnValidSubmit="EditAsync" ReturnAction="Return" />
+}
+
+@code {
+    private Schedule? schedule;
+    private ScheduleForm? scheduleForm;
+
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseHttp = await repository.Get<Schedule>($"/api/schedules/{Id}");
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/schedules");
+                return;
+            }
+
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        schedule = responseHttp.Response;
+    }
+
+    private async Task EditAsync()
+    {
+        var responseHttp = await repository.Put("/api/schedules", schedule);
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+
+        await BlazoredModal.CloseAsync(ModalResult.Ok());
+        Return();
+    }
+
+    private void Return()
+    {
+        scheduleForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo("/schedules");
+    }
+}

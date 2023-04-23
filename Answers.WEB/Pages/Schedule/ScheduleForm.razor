@@ -14,14 +14,20 @@
     <div class="mb-3">
         <label>Description:</label>
         <div>
-            <InputTextArea class="form-control" @bind-Value="@Schedule.Name" rows="3" />
+            <InputTextArea class="form-control" @bind-Value="@Schedule.Description" rows="3" />
             <ValidationMessage For="@(() => Schedule.Description)" />
         </div>
     </div>
     <div class="mb-3">
         <div class="form-group">
-            <label for="fecha">Fecha:</label>
+            <label for="fecha">Fecha inicio:</label>
             <input type="text" class="form-control datepicker" name="Fecha"/>
+        </div>
+    </div>
+    <div class="mb-3">
+        <div class="form-group">
+            <label for="fecha">Fecha fin:</label>
+            <input type="text" class="form-control datepicker" name="Fecha" />
         </div>
     </div>
     <button class="btn btn-primary" type="submit">Guardar Cambios</button>
