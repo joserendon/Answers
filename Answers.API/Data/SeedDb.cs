@@ -4,6 +4,7 @@ using Answers.API.Services;
 using Answers.Shared.Entities;
 using Answers.Shared.Enums;
 using Answers.Shared.Responses;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 
 namespace Answers.API.Data
@@ -172,6 +173,18 @@ namespace Answers.API.Data
             }
         }
 
+        private async Task CheckScheduleAsync()
+        {
+            if (!_context.Schedules.Any())
+            {
+                var Questionaire = await _context.Questionnaires.FirstOrDefaultAsync(x => x.Title == "Encuesta satisfaccion de usuarios");
+                if (Questionaire != null)
+                {
+                    //_context.Questions.Add(new Schedule {Name = "Encuesta para linea soporte", Description = "Encuesta solo para la linea de atencion en soporte", StartDate = DateTime.UtcNow.Date, EndDate = DateTime.UtcNow.Date, IsActive = true });
+                    //await _context.SaveChangesAsync();
+                }
+            }
+        }
         private async Task CheckAnswerAsync()
         {
             if (!_context.Answers.Any())
