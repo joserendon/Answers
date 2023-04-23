@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Answers.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20230423153959_AddScheduleTable")]
+    [Migration("20230423170003_AddScheduleTable")]
     partial class AddScheduleTable
     {
         /// <inheritdoc />
@@ -199,8 +199,6 @@ namespace Answers.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("QuestionnaireId");
 
                     b.HasIndex("QuestionnaireId", "Name", "StartDate")
                         .IsUnique();
@@ -468,9 +466,9 @@ namespace Answers.API.Migrations
             modelBuilder.Entity("Answers.Shared.Entities.Schedule", b =>
                 {
                     b.HasOne("Answers.Shared.Entities.Questionnaire", "Questionnaire")
-                        .WithOne()
-                        .HasForeignKey("Answers.Shared.Entities.Schedule", "QuestionnaireId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithMany("Schedules")
+                        .HasForeignKey("QuestionnaireId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Questionnaire");
@@ -567,6 +565,8 @@ namespace Answers.API.Migrations
             modelBuilder.Entity("Answers.Shared.Entities.Questionnaire", b =>
                 {
                     b.Navigation("Questions");
+
+                    b.Navigation("Schedules");
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.State", b =>

@@ -197,8 +197,6 @@ namespace Answers.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuestionnaireId");
-
                     b.HasIndex("QuestionnaireId", "Name", "StartDate")
                         .IsUnique();
 
@@ -465,9 +463,9 @@ namespace Answers.API.Migrations
             modelBuilder.Entity("Answers.Shared.Entities.Schedule", b =>
                 {
                     b.HasOne("Answers.Shared.Entities.Questionnaire", "Questionnaire")
-                        .WithOne()
-                        .HasForeignKey("Answers.Shared.Entities.Schedule", "QuestionnaireId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithMany("Schedules")
+                        .HasForeignKey("QuestionnaireId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Questionnaire");
@@ -564,6 +562,8 @@ namespace Answers.API.Migrations
             modelBuilder.Entity("Answers.Shared.Entities.Questionnaire", b =>
                 {
                     b.Navigation("Questions");
+
+                    b.Navigation("Schedules");
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.State", b =>

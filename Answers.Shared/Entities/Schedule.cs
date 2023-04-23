@@ -26,11 +26,10 @@ namespace Answers.Shared.Entities
 
         public bool IsActive { get; set; }
 
-        public Questionnaire? Questionnaire { get; set; }
-
         [Display(Name = "Cuestionario")]
         [Required(ErrorMessage = "El campo {0} es obligatorio.")]
         public Guid? QuestionnaireId { get; set; }
+        public Questionnaire? Questionnaire { get; set; }
 
         public string? URLImage { get; set; }
     }

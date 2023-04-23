@@ -32,13 +32,8 @@ namespace Answers.API.Migrations
                         column: x => x.QuestionnaireId,
                         principalTable: "Questionnaires",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Schedules_QuestionnaireId",
-                table: "Schedules",
-                column: "QuestionnaireId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Schedules_QuestionnaireId_Name_StartDate",

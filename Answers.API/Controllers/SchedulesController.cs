@@ -38,7 +38,8 @@ namespace Answers.API.Controllers
         public async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
         {
             var queryable = _context.Schedules
-                                    .Include(x => x.Questionnaire)
+                                    .Include(x => x.Questionnaire!)
+                                    .ThenInclude(q => q.Questions)
                                     .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
