@@ -48,8 +48,7 @@ else
                         <h5 class="card-title text-navy"> @schedule.Name</h5>
                     </div>
                     <div class="card-footer text-center">
-                        <a href="/schedules/details/@schedule.QuestionnaireId" class="btn btn-sm btn-secondary"><i class="oi oi-info" /> Detalles</a>
-                        <button class="btn btn-sm btn-primary" @onclick=@(() => AddToCartAsync(schedule.Id.ToString()))><i class="oi oi-plus" /> Agregar a la programacion</button>
+                        <a href="/schedules/details/@schedule.QuestionnaireId" class="btn btn-sm btn-secondary"><i class="oi oi-info" /> Detalles</a> 
                     </div>
                 </div>
             </div>
@@ -127,11 +126,6 @@ else
         int page = 1;
         await LoadAsync(page);
         await SelectedPageAsync(page);
-    }
-
-    private void AddToCartAsync(String questionaireId)
-    {
-
-    }
+    } 
 }
 
