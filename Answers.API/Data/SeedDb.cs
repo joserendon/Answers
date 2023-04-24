@@ -6,6 +6,7 @@ using Answers.Shared.Enums;
 using Answers.Shared.Responses;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Answers.API.Data
 {
@@ -28,8 +29,7 @@ namespace Answers.API.Data
             await CheckCountriesAsync();
             await CheckRolesAsync();
             await CheckQuestionnaireAsync();
-            await CheckQuestionAsync();
-            await CheckAnswerAsync();
+            //await CheckScheduleAsync();
             await CheckUserAsync("1037637599", "Jose", "Rendon", "jose@yopmail.com", "322 311 4620", "Calle falsa 123", UserType.Admin);
             await CheckUserAsync("1020304050", "Jeisson", "Garcia", "jeisson@yopmail.com", "322 300 2333", "Calle nula 123", UserType.Admin);
             
@@ -144,32 +144,23 @@ namespace Answers.API.Data
         {
             if (!_context.Questionnaires.Any())
             {
-                _context.Questionnaires.Add(new Questionnaire { Title = "Encuesta satisfaccion de usuarios" });
-                var reponseQuestionnaire = await _context.SaveChangesAsync();
-            }
-        }
-        private async Task CheckQuestionAsync()
-        {
-            if (!_context.Questions.Any())
-            {
-                var Questionaire = await _context.Questionnaires.FirstOrDefaultAsync(x => x.Title == "Encuesta satisfaccion de usuarios");
-                if (Questionaire != null)
+                var answers = new List<Answer>()
                 {
-                    _context.Questions.Add(new Question { Name = "¿Recomendarías nuestro servicio a otras personas?", Type = 0,QuestionnaireId = Questionaire.Id });
-                    await _context.SaveChangesAsync();
-                    _context.Questions.Add(new Question { Name = "¿Consideras que el precio del servicio es justo y razonable?", Type = 0, QuestionnaireId = Questionaire.Id });
-                    await _context.SaveChangesAsync();
-                    _context.Questions.Add(new Question { Name = "¿La información proporcionada por el personal de soporte fue clara y útil?", Type = 0, QuestionnaireId = Questionaire.Id });
-                    await _context.SaveChangesAsync();
-                    _context.Questions.Add(new Question { Name = "¿Cómo calificarías la calidad del servicio que recibiste?", Type = 0, QuestionnaireId = Questionaire.Id });
-                    await _context.SaveChangesAsync();
-                    _context.Questions.Add(new Question { Name = "¿Qué es lo que más te gustó de nuestro servicio?", Type = 0, QuestionnaireId = Questionaire.Id });
-                    await _context.SaveChangesAsync();
-                    _context.Questions.Add(new Question { Name = "¿El proceso de contacto y atención al cliente fue fácil y sencillo?", Type = 0, QuestionnaireId = Questionaire.Id });
-                    await _context.SaveChangesAsync();
-                    _context.Questions.Add(new Question { Name = "¿La atención recibida fue oportuna y eficiente?", Type = 0, QuestionnaireId = Questionaire.Id });
-                    await _context.SaveChangesAsync();
-                }
+                    new Answer { Name = "No" },
+                    new Answer { Name = "Si" },
+                };
+
+                var questions = new List<Question>()
+                {
+                    new Question { Name = "¿Recomendarías nuestro servicio a otras personas?", Type = QuestionType.Choice, Answers = answers },
+                    new Question { Name = "¿Consideras que el precio del servicio es justo y razonable?", Type = QuestionType.Choice, Answers = answers },
+                    new Question { Name = "¿La atención recibida fue oportuna y eficiente?", Type = QuestionType.Choice, Answers = answers },
+                    new Question { Name = "¿La información proporcionada por el personal de soporte fue clara y útil?", Type = QuestionType.Open, Answers = answers },
+                    new Question { Name = "¿Qué es lo que más te gustó de nuestro servicio?", Type = QuestionType.Open, Answers = answers },
+                    new Question { Name = "¿El proceso de contacto y atención al cliente fue fácil y sencillo?", Type = QuestionType.Choice, Answers = answers },
+                };
+                _context.Questionnaires.Add(new Questionnaire { Title = "Encuesta satisfaccion de usuarios", Questions = questions});
+                var reponseQuestionnaire = await _context.SaveChangesAsync();
             }
         }
 
@@ -185,23 +176,7 @@ namespace Answers.API.Data
                 }
             }
         }
-        private async Task CheckAnswerAsync()
-        {
-            if (!_context.Answers.Any())
-            {
-                var Question = await _context.Questions.FirstOrDefaultAsync(x => x.Name == "¿Cómo calificarías la calidad del servicio que recibiste?");
-                if (Question != null)
-                {
-                    _context.Answers.Add(new Answer { Name = "No", QuestionId = Question.Id });
-                    _context.Answers.Add(new Answer { Name = "Si", QuestionId = Question.Id });
-                    _context.Answers.Add(new Answer { Name = "Quizas", QuestionId = Question.Id });
-                    _context.Answers.Add(new Answer { Name = "Talvez", QuestionId = Question.Id });
-                    _context.Answers.Add(new Answer { Name = "Totalmente", QuestionId = Question.Id });
-                    _context.Answers.Add(new Answer { Name = "Jamas", QuestionId = Question.Id });
-                    var reponseQuestion = await _context.SaveChangesAsync();
-                }
-            }
-        }
+
         //private async Task CheckCountriesAsync()
         //{
         //    if (!_context.Countries.Any())
