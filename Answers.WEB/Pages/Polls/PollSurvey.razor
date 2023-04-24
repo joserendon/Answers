@@ -15,58 +15,59 @@ else
             Ya has realizado la encuesta.
         </div>
     }
-    @foreach (var question in Questions!)
-    {
-        @if (question.Type is not QuestionType.Open && question?.Answers != null)
+    @if (!isCompleted || (isCompleted && Questions.All(x => x.Type is QuestionType.Open)))
+        @foreach (var question in Questions!)
         {
-            <h6>@question.Name</h6>
-            <hr />
+            @if (question.Type is not QuestionType.Open && question?.Answers != null)
+            {
+                <h6>@question.Name</h6>
+                <hr />
 
-            <div class="mb-3 mt-3">
-                @*<h3>@question!.ChoiceAnswers</h3>*@
-                @if (question is not null && question.Type == QuestionType.Choice)
-                {
-                    <select id="questionnaireId" @onchange="@((args) => SetAnswers(question.ChoiceAnswers,isUnique: true,args))" class="form-control">
-                        <option value="@Guid.Empty">-- Seleccione una respuesta --</option>
+                <div class="mb-3 mt-3">
+                    @*<h3>@question!.ChoiceAnswers</h3>*@
+                    @if (question is not null && question.Type == QuestionType.Choice)
+                    {
+                        <select id="questionnaireId" @onchange="@((args) => SetAnswers(question.ChoiceAnswers,isUnique: true,args))" class="form-control">
+                            <option value="@Guid.Empty">-- Seleccione una respuesta --</option>
+                            @foreach (var answer in question?.Answers!)
+                            {
+                                <option value="@answer.Id">@answer.Name</option>
+                            }
+                        </select>
+                        <br />
+                        <br />
+                    }
+
+
+                    @if (question is not null && question.Type == QuestionType.Multiple)
+                    {
                         @foreach (var answer in question?.Answers!)
                         {
-                            <option value="@answer.Id">@answer.Name</option>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="@answer.Id" id="@answer.Id" value="@answer.Id" @onchange="@((args) => SetAnswers(question.ChoiceAnswers,isUnique: false,args))">
+                                <label class="form-check-label" for="@answer.Id">
+                                    @answer.Name
+                                </label>
+                            </div>
                         }
-                    </select>
-                    <br />
-                    <br />
-                }
-
-
-                @if (question is not null && question.Type == QuestionType.Multiple)
-                {
-                    @foreach (var answer in question?.Answers!)
-                    {
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="@answer.Id" id="@answer.Id" value="@answer.Id" @onchange="@((args) => SetAnswers(question.ChoiceAnswers,isUnique: false,args))">
-                            <label class="form-check-label" for="@answer.Id">
-                                @answer.Name
-                            </label>
-                        </div>
+                        <br />
+                        <br />
                     }
-                    <br />
-                    <br />
-                }
-            </div>
-        }
-        else
-        {
-            <h6>@question?.Name</h6>
-            <hr />
+                </div>
+            }
+            else
+            {
+                <h6>@question?.Name</h6>
+                <hr />
 
-            @*<h3>@question!.OpenAnswer</h3>*@
-            <div class="mb-3 mt-3">
-                <InputTextArea class="form-control" @bind-Value="question!.OpenAnswer" />
-                <br />
-                <br />
-            </div>
+                @*<h3>@question!.OpenAnswer</h3>*@
+                <div class="mb-3 mt-3">
+                    <InputTextArea class="form-control" @bind-Value="question!.OpenAnswer" />
+                    <br />
+                    <br />
+                </div>
+            }
         }
-    }
 
     @if (!isCompleted)
     {

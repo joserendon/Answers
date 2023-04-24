@@ -191,7 +191,16 @@ namespace Answers.API.Controllers
                 return BadRequest(ex.Message);
             }
 
-            return Ok();
+            var response = _mailHelper.SendMail(user.FullName, user.Email!,
+              $"Answers - Notificación de participación",
+              $"<p>Graciar por participar en la encuesta sus respuestas han sido guardadas con éxito</p>");
+
+            if (response.IsSuccess)
+            {
+                return NoContent();
+            }
+
+            return BadRequest(response.Message);
         }
 
         [HttpGet("LoadSurvey")]
