@@ -1,8 +1,10 @@
-﻿using Answers.API.Helpers;
+﻿using Answers.API.Controllers;
+using Answers.API.Helpers;
 using Answers.API.Services;
 using Answers.Shared.Entities;
 using Answers.Shared.Enums;
 using Answers.Shared.Responses;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 
 namespace Answers.API.Data
@@ -25,8 +27,12 @@ namespace Answers.API.Data
             await _context.Database.EnsureCreatedAsync();
             await CheckCountriesAsync();
             await CheckRolesAsync();
+            await CheckQuestionnaireAsync();
+            await CheckQuestionAsync();
+            await CheckAnswerAsync();
             await CheckUserAsync("1037637599", "Jose", "Rendon", "jose@yopmail.com", "322 311 4620", "Calle falsa 123", UserType.Admin);
             await CheckUserAsync("1020304050", "Jeisson", "Garcia", "jeisson@yopmail.com", "322 300 2333", "Calle nula 123", UserType.Admin);
+            
         }
 
         private async Task CheckRolesAsync()
@@ -132,6 +138,69 @@ namespace Answers.API.Data
             var response = (List<CityResponse>)responseStates.Result!;
 
             return response.ToList();
+        }
+
+        private async Task CheckQuestionnaireAsync()
+        {
+            if (!_context.Questionnaires.Any())
+            {
+                _context.Questionnaires.Add(new Questionnaire { Title = "Encuesta satisfaccion de usuarios" });
+                var reponseQuestionnaire = await _context.SaveChangesAsync();
+            }
+        }
+        private async Task CheckQuestionAsync()
+        {
+            if (!_context.Questions.Any())
+            {
+                var Questionaire = await _context.Questionnaires.FirstOrDefaultAsync(x => x.Title == "Encuesta satisfaccion de usuarios");
+                if (Questionaire != null)
+                {
+                    _context.Questions.Add(new Question { Name = "¿Recomendarías nuestro servicio a otras personas?", Type = 0,QuestionnaireId = Questionaire.Id });
+                    await _context.SaveChangesAsync();
+                    _context.Questions.Add(new Question { Name = "¿Consideras que el precio del servicio es justo y razonable?", Type = 0, QuestionnaireId = Questionaire.Id });
+                    await _context.SaveChangesAsync();
+                    _context.Questions.Add(new Question { Name = "¿La información proporcionada por el personal de soporte fue clara y útil?", Type = 0, QuestionnaireId = Questionaire.Id });
+                    await _context.SaveChangesAsync();
+                    _context.Questions.Add(new Question { Name = "¿Cómo calificarías la calidad del servicio que recibiste?", Type = 0, QuestionnaireId = Questionaire.Id });
+                    await _context.SaveChangesAsync();
+                    _context.Questions.Add(new Question { Name = "¿Qué es lo que más te gustó de nuestro servicio?", Type = 0, QuestionnaireId = Questionaire.Id });
+                    await _context.SaveChangesAsync();
+                    _context.Questions.Add(new Question { Name = "¿El proceso de contacto y atención al cliente fue fácil y sencillo?", Type = 0, QuestionnaireId = Questionaire.Id });
+                    await _context.SaveChangesAsync();
+                    _context.Questions.Add(new Question { Name = "¿La atención recibida fue oportuna y eficiente?", Type = 0, QuestionnaireId = Questionaire.Id });
+                    await _context.SaveChangesAsync();
+                }
+            }
+        }
+
+        private async Task CheckScheduleAsync()
+        {
+            if (!_context.Schedules.Any())
+            {
+                var Questionaire = await _context.Questionnaires.FirstOrDefaultAsync(x => x.Title == "Encuesta satisfaccion de usuarios");
+                if (Questionaire != null)
+                {
+                    //_context.Questions.Add(new Schedule {Name = "Encuesta para linea soporte", Description = "Encuesta solo para la linea de atencion en soporte", StartDate = DateTime.UtcNow.Date, EndDate = DateTime.UtcNow.Date, IsActive = true });
+                    //await _context.SaveChangesAsync();
+                }
+            }
+        }
+        private async Task CheckAnswerAsync()
+        {
+            if (!_context.Answers.Any())
+            {
+                var Question = await _context.Questions.FirstOrDefaultAsync(x => x.Name == "¿Cómo calificarías la calidad del servicio que recibiste?");
+                if (Question != null)
+                {
+                    _context.Answers.Add(new Answer { Name = "No", QuestionId = Question.Id });
+                    _context.Answers.Add(new Answer { Name = "Si", QuestionId = Question.Id });
+                    _context.Answers.Add(new Answer { Name = "Quizas", QuestionId = Question.Id });
+                    _context.Answers.Add(new Answer { Name = "Talvez", QuestionId = Question.Id });
+                    _context.Answers.Add(new Answer { Name = "Totalmente", QuestionId = Question.Id });
+                    _context.Answers.Add(new Answer { Name = "Jamas", QuestionId = Question.Id });
+                    var reponseQuestion = await _context.SaveChangesAsync();
+                }
+            }
         }
         //private async Task CheckCountriesAsync()
         //{
