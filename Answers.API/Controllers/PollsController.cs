@@ -3,10 +3,12 @@ using Answers.API.Helpers;
 using Answers.Shared.DTOs;
 using Answers.Shared.Entities;
 using Answers.Shared.Enums;
+using Answers.Shared.Utilities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Mime;
 
 namespace Answers.API.Controllers
 {
@@ -229,6 +231,21 @@ namespace Answers.API.Controllers
             }).ToList();
 
             return Ok(pollsDto);
+        }
+
+        [HttpGet("GetPollReportAsync")]
+        public async Task<ActionResult> GetPollReportAsync(Guid ScheduleId)
+        {
+            var dataReport = await _context.Set<PollsReport>().FromSqlInterpolated($"EXEC DBO.Polls_Report @ScheduleId={ScheduleId}").ToListAsync();
+
+            if (dataReport is null)
+            {
+                return NotFound();
+            }
+
+            var report = Export.ExportExcel(dataReport, out string fileName);
+
+            return File(report, MediaTypeNames.Application.Octet, fileName);
         }
     }
 }

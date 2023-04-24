@@ -3,6 +3,7 @@
     public interface IRepository
     {
         Task<HttpResponseWrapper<T>> Get<T>(string url);
+        Task<Stream> GetStream(string url);
 
         Task<HttpResponseWrapper<object>> Get(string url);
 

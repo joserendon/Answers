@@ -1,4 +1,5 @@
-﻿using Answers.Shared.Entities;
+﻿
+using Answers.Shared.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,6 +41,8 @@ namespace Answers.API.Data
             modelBuilder.Entity<UserPoll>().HasIndex(nameof(UserPoll.ScheduleId), nameof(UserPoll.UserId)).IsUnique();
             modelBuilder.Entity<Poll>().HasIndex(nameof(Poll.ScheduleId), nameof(Poll.UserId), nameof(Poll.QuestionnaireId), nameof(Poll.QuestionId)).IsUnique();
             modelBuilder.Entity<ReplyDetail>().HasIndex(nameof(ReplyDetail.ReplyId), nameof(ReplyDetail.AnswerId)).IsUnique();
+
+            modelBuilder.Entity<PollsReport>().ToSqlQuery("EXEC DBO.Polls_Report @ScheduleId");
         }
     }
 }

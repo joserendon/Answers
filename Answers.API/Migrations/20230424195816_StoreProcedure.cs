@@ -1,0 +1,42 @@
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace Answers.API.Migrations
+{
+    /// <inheritdoc />
+    public partial class StoreProcedure : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(@"
+CREATE PROCEDURE dbo.Polls_Report 
+@ScheduleId UNIQUEIDENTIFIER=NULL 
+AS
+BEGIN
+		SELECT ROW_NUMBER() OVER(ORDER BY SCHEDULES.ID )ID,
+               SCHEDULES.ID SCHEDULES_ID,SCHEDULES.NAME SCHEDULES_NAME,SCHEDULES.DESCRIPTION SCHEDULES_DESCRIPTION,SCHEDULES.STARTDATE,SCHEDULES.ENDDATE,SCHEDULES.ISACTIVE,
+			   USERS.ID USERS_ID,USERS.FIRSTNAME,USERS.LASTNAME,
+			   QUESTIONS.ID QUESTIONS_ID,QUESTIONS.NAME QUESTIONS_NAME,QUESTIONS.TYPE,
+			   ISNULL(ANSWERS.NAME,REPLYDETAILS.OPENANSWER)ANSWERS_NAME
+		FROM SCHEDULES
+			 JOIN USERPOLLS ON USERPOLLS.SCHEDULEID=SCHEDULES.ID
+			 JOIN ASPNETUSERS USERS ON USERS.ID=USERPOLLS.USERID 
+			 JOIN POLLS ON POLLS.SCHEDULEID=USERPOLLS.SCHEDULEID AND POLLS.USERID=USERS.ID
+			 JOIN REPLIES ON REPLIES.POLLID=POLLS.ID
+			 JOIN REPLYDETAILS ON REPLYDETAILS.REPLYID=REPLIES.ID
+			 JOIN QUESTIONS ON QUESTIONS.ID=POLLS.QUESTIONID
+			 LEFT JOIN ANSWERS ON ANSWERS.ID=REPLYDETAILS.ANSWERID
+		WHERE (SCHEDULES.ID=@ScheduleId OR @ScheduleId IS NULL)
+END
+");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql(@"DROP PROCEDURE dbo.Polls_Report");
+        }
+    }
+}

@@ -1,7 +1,9 @@
 ﻿@page "/schedules"
+@using Answers.WEB.Helpers;
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
-@inject IRepository repository
+@inject IRepository repository 
+@inject IJSRuntime JS
 @attribute [Authorize(Roles = "Admin")]
 
 @if (Schedules is null)
@@ -58,6 +60,7 @@ else
                                         <a href="/schedules/details/@schedules.QuestionnaireId" class="btn btn-info btn-sm"><i class="oi oi-list" /> Detalles</a>
                                         <a @onclick=@(() => ShowModal(id: schedules.Id, isEdit: true)) class="btn btn-warning btn-sm"><i class="oi oi-pencil" /> Editar</a>
                                         <button class="btn btn-danger btn-sm" @onclick=@(() => DeleteAsync(schedules.Id))><i class="oi oi-trash" /> Borrar</button>
+                                        <button class="btn btn-dark btn-sm" @onclick=@(() => DownloadReportFile(schedules.Id))><i class="oi oi-file" /> Descargar</button>
                                     </td>
                                 </tr>
                             }
@@ -194,6 +197,15 @@ else
         int page = 1;
         await LoadAsync(page);
         await SelectedPageAsync(page);
+    }
+    private async Task DownloadReportFile(Guid Id)
+    {
+        var fileStream = await repository.GetStream($"api/polls/GetPollReportAsync?ScheduleId={Id}"); 
+        var fileName = "Reporte.xlsx";
+
+        using var streamRef = new DotNetStreamReference(stream: fileStream);
+
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 }
 
