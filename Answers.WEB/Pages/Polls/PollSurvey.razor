@@ -1,0 +1,38 @@
+﻿@page "/polls/survey/{Id:guid}"
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+@attribute [Authorize(Roles = "Admin")]
+
+<h1>hola @Id</h1>
+@*@if (Polls is null)
+{
+    <div class="spinner" />
+}
+else
+{
+}*@
+@code {
+    private List<Poll>? Polls;
+    private List<Questionnaire>? question;
+
+    [Parameter]
+    public Guid Id { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+
+        await LoadAsync();
+    }
+    private async Task LoadAsync( )
+    { 
+        //try
+        //{
+        //    var responseHppt = await repository.Get<List<Poll>>(url1); 
+        //    Polls = responseHppt.Response!; 
+        //}
+        //catch (Exception ex)
+        //{
+        //    await sweetAlertService.FireAsync("Error", ex.Message, SweetAlertIcon.Error);
+        //}
+    }
+}

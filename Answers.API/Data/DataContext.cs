@@ -12,15 +12,18 @@ namespace Answers.API.Data
         }
 
         public DbSet<City> Cities { get; set; }
-
         public DbSet<Country> Countries { get; set; }
-
         public DbSet<State> States { get; set; }
 
         public DbSet<Questionnaire> Questionnaires { get; set; }
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
+
+        public DbSet<UserPoll> UserPolls { get; set; }
+        public DbSet<Poll> Polls { get; set; }
+        public DbSet<Reply> Replies { get; set; }
+        public DbSet<ReplyDetail> ReplyDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +36,10 @@ namespace Answers.API.Data
             modelBuilder.Entity<Question>().HasIndex(nameof(Question.QuestionnaireId), nameof(Question.Name)).IsUnique();
             modelBuilder.Entity<Answer>().HasIndex(nameof(Answer.QuestionId), nameof(Answer.Name)).IsUnique();
             modelBuilder.Entity<Schedule>().HasIndex(nameof(Schedule.QuestionnaireId), nameof(Schedule.Name), nameof(Schedule.StartDate)).IsUnique();
+
+            modelBuilder.Entity<UserPoll>().HasIndex(nameof(UserPoll.ScheduleId), nameof(UserPoll.UserId)).IsUnique();
+            modelBuilder.Entity<Poll>().HasIndex(nameof(Poll.ScheduleId), nameof(Poll.UserId), nameof(Poll.QuestionnaireId), nameof(Poll.QuestionId)).IsUnique();
+            modelBuilder.Entity<ReplyDetail>().HasIndex(nameof(ReplyDetail.ReplyId), nameof(ReplyDetail.AnswerId)).IsUnique();
         }
     }
 }
