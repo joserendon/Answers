@@ -4,6 +4,7 @@ using Answers.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Answers.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230424144816_ReplyDetail.addOpenAnswer")]
+    partial class ReplyDetailaddOpenAnswer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,7 +94,7 @@ namespace Answers.API.Migrations
 
             modelBuilder.Entity("Answers.Shared.Entities.Poll", b =>
                 {
-                    b.Property<Guid?>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
@@ -125,57 +128,6 @@ namespace Answers.API.Migrations
                         .IsUnique();
 
                     b.ToTable("Polls");
-                });
-
-            modelBuilder.Entity("Answers.Shared.Entities.PollsReport", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ANSWERS_NAME")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ENDDATE")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FIRSTNAME")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("ISACTIVE")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LASTNAME")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("QUESTIONS_ID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("QUESTIONS_NAME")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SCHEDULES_DESCRIPTION")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("SCHEDULES_ID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("SCHEDULES_NAME")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("STARTDATE")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte>("TYPE")
-                        .HasColumnType("tinyint");
-
-                    b.Property<Guid?>("USERS_ID")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.ToTable((string)null);
-
-                    b.ToSqlQuery("EXEC DBO.Polls_Report @ScheduleId");
                 });
 
             modelBuilder.Entity("Answers.Shared.Entities.Question", b =>
@@ -463,9 +415,6 @@ namespace Answers.API.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("bit");
 
                     b.Property<Guid>("ScheduleId")
                         .HasColumnType("uniqueidentifier");

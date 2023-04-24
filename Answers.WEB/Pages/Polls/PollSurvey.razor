@@ -2,37 +2,155 @@
 @inject IRepository repository
 @inject NavigationManager navigationManager
 @inject SweetAlertService sweetAlertService
-@attribute [Authorize(Roles = "Admin")]
 
-<h1>hola @Id</h1>
-@*@if (Polls is null)
+@if (Questions is null || loading)
 {
     <div class="spinner" />
 }
 else
 {
-}*@
-@code {
-    private List<Poll>? Polls;
-    private List<Questionnaire>? question;
+    @if (isCompleted)
+    {
+        <div class="alert alert-success" role="alert">
+            Ya has realizado la encuesta.
+        </div>
+    }
+    @if (!isCompleted || (isCompleted && Questions.All(x => x.Type is QuestionType.Open)))
+        @foreach (var question in Questions!)
+        {
+            @if (question.Type is not QuestionType.Open && question?.Answers != null)
+            {
+                <h6>@question.Name</h6>
+                <hr />
 
+                <div class="mb-3 mt-3">
+                    @*<h3>@question!.ChoiceAnswers</h3>*@
+                    @if (question is not null && question.Type == QuestionType.Choice)
+                    {
+                        <select id="questionnaireId" @onchange="@((args) => SetAnswers(question.ChoiceAnswers,isUnique: true,args))" class="form-control">
+                            <option value="@Guid.Empty">-- Seleccione una respuesta --</option>
+                            @foreach (var answer in question?.Answers!)
+                            {
+                                <option value="@answer.Id">@answer.Name</option>
+                            }
+                        </select>
+                        <br />
+                        <br />
+                    }
+
+
+                    @if (question is not null && question.Type == QuestionType.Multiple)
+                    {
+                        @foreach (var answer in question?.Answers!)
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="@answer.Id" id="@answer.Id" value="@answer.Id" @onchange="@((args) => SetAnswers(question.ChoiceAnswers,isUnique: false,args))">
+                                <label class="form-check-label" for="@answer.Id">
+                                    @answer.Name
+                                </label>
+                            </div>
+                        }
+                        <br />
+                        <br />
+                    }
+                </div>
+            }
+            else
+            {
+                <h6>@question?.Name</h6>
+                <hr />
+
+                @*<h3>@question!.OpenAnswer</h3>*@
+                <div class="mb-3 mt-3">
+                    <InputTextArea class="form-control" @bind-Value="question!.OpenAnswer" />
+                    <br />
+                    <br />
+                </div>
+            }
+        }
+
+    @if (!isCompleted)
+    {
+        <button class="btn btn-primary" @onclick="SaveSurvey">Guardar Cambios</button>
+        <a class="btn btn-success" href="/polls">Regresar</a>
+    }
+}
+@code {
+    private bool loading;
+    private bool isCompleted;
+    private List<QuestionDTO>? Questions;
     [Parameter]
     public Guid Id { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public EventCallback OnValidSubmit { get; set; }
+
+    public bool FormPostedSuccessfully { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-
         await LoadAsync();
     }
-    private async Task LoadAsync( )
-    { 
-        //try
-        //{
-        //    var responseHppt = await repository.Get<List<Poll>>(url1); 
-        //    Polls = responseHppt.Response!; 
-        //}
-        //catch (Exception ex)
-        //{
-        //    await sweetAlertService.FireAsync("Error", ex.Message, SweetAlertIcon.Error);
-        //}
+    private async Task LoadAsync()
+    {
+        try
+        {
+            var responseHttpUserPolls = await repository.Get<UserPoll>($"api/polls/GetUserPollAsync?UserPollId={Id}");
+            var userPoll = responseHttpUserPolls.Response!;
+
+            isCompleted = userPoll.IsCompleted;
+
+            if (userPoll is not null && userPoll.IsCompleted)
+            {
+                var responseHttpPollDto = await repository.Get<List<QuestionDTO>>($"api/polls/LoadSurvey?UserPollId={Id}");
+                Questions = responseHttpPollDto.Response!;
+                return;
+            }
+
+            var responseHttpPoll = await repository.Get<List<Poll>>($"api/polls?UserPollId={Id}");
+            var Poll = responseHttpPoll.Response!;
+
+            Questions = Poll.FirstOrDefault()?.UserPoll!.Schedule!.Questionnaire!.Questions!.Select(x => new QuestionDTO
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Type = x.Type,
+                    Answers = x.Answers,
+                    Questionnaire = x.Questionnaire,
+                    QuestionnaireId = x.QuestionnaireId,
+                    PollId = Poll.Where(poll => poll.QuestionnaireId == x.QuestionnaireId && poll.QuestionId == x.Id)?.FirstOrDefault()?.Id!,
+                }).ToList();
+        }
+        catch (Exception ex)
+        {
+            await sweetAlertService.FireAsync("Error", ex.Message, SweetAlertIcon.Error);
+        }
+    }
+    private async Task SaveSurvey()
+    {
+        loading = true;
+        var responseHttp = await repository.Post($"/api/polls/SaveSurvey?UserPollId={Id}", Questions);
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            loading = false;
+            return;
+        }
+
+        loading = false;
+        await sweetAlertService.FireAsync("Confirmación", "Se ha guardado correctamente sus respuestas.", SweetAlertIcon.Info);
+        navigationManager.NavigateTo($"/polls");
+    }
+    private Task SetAnswers(List<Guid?>? ChoiceAnswers, bool isUnique, ChangeEventArgs e)
+    {
+        if (isUnique)
+        {
+            ChoiceAnswers?.Clear();
+        }
+        Guid.TryParse(e.Value?.ToString(), out Guid value);
+        ChoiceAnswers?.Add(value);
+
+        return Task.CompletedTask;
     }
 }

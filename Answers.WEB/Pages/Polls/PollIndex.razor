@@ -130,8 +130,7 @@ else
         }
         var Id = responseHttp.Response?.Id;
 
-        loading = false;
-        //await sweetAlertService.FireAsync("Confirmación", "Se te ha enviado un correo electrónico con las instrucciones para recuperar su contraseña.", SweetAlertIcon.Info);
+        loading = false; 
         navigationManager.NavigateTo($"/polls/survey/{Id}");
     }
 }

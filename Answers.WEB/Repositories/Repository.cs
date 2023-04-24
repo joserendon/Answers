@@ -22,6 +22,11 @@ namespace Answers.WEB.Repositories
             var responseHTTP = await _httpClient.GetAsync(url);
             return new HttpResponseWrapper<object>(null, !responseHTTP.IsSuccessStatusCode, responseHTTP);
         }
+        public async Task<Stream> GetStream(string url)
+        {
+            var response = await _httpClient.GetAsync(url);
+            return await response.Content.ReadAsStreamAsync();
+        }
 
         public async Task<HttpResponseWrapper<T>> Get<T>(string url)
         {

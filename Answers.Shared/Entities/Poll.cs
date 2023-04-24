@@ -5,7 +5,7 @@ namespace Answers.Shared.Entities
     public class Poll
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         public Guid? UserPollId { get; set; }
 

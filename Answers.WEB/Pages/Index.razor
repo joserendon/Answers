@@ -26,20 +26,20 @@ else
         <div class="row row-cols-1 row-cols-md-4 g-4 mt-1">
         @foreach (var schedule in Schedules!)
         {
-                    <div class="col">
-                        <div class="card h-100">
-                            <div class="text-center zoom">
-                                <img src="@schedule.URLImage" style="height:150px; max-width:200px;" class="text-center" />
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title text-navy"> @schedule.Name</h5>
-                            </div>
-                            <div class="card-footer text-center">
-                                <a href="/schedules/details/@schedule.QuestionnaireId" class="btn btn-sm btn-secondary"><i class="oi oi-info" /> Detalles</a>
-                                <button class="btn btn-sm btn-primary" @onclick=@(() => CreateSurvey(schedule))><i class="oi oi-plus" /> Realizar encuesta</button>
-                            </div>
-                        </div>
+            <div class="col">
+                <div class="card h-100">
+                    <div class="text-center zoom">
+                        <img src="@schedule.URLImage" style="height:150px; max-width:200px;" class="text-center" />
                     </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-navy"> @schedule.Name</h5>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="/schedules/details/@schedule.QuestionnaireId" class="btn btn-sm btn-secondary"><i class="oi oi-info" /> Detalles</a>
+                        <button class="btn btn-sm btn-primary" @onclick=@(() => AddToCartAsync(schedule.Id.ToString()))><i class="oi oi-plus" /> Agregar a la programacion</button>
+                    </div>
+                </div>
+            </div>
         }
         </div>
 }
@@ -117,22 +117,9 @@ else
         await SelectedPageAsync(page);
     }
 
-    private async Task CreateSurvey(Schedule schedule)
+    private void AddToCartAsync(String questionaireId)
     {
-        loading = true;
-        var responseHttp = await repository.Post<Schedule, UserPoll>("/api/polls/CreateSurvey", schedule);
-        if (responseHttp.Error)
-        {
-            var message = await responseHttp.GetErrorMessageAsync();
-            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
-            loading = false;
-            return;
-        }
-        var Id = responseHttp.Response?.Id;
 
-        loading = false;
-        //await sweetAlertService.FireAsync("Confirmación", "Se te ha enviado un correo electrónico con las instrucciones para recuperar su contraseña.", SweetAlertIcon.Info);
-        navigationManager.NavigateTo($"/polls/survey/{Id}");
     }
 }
 
