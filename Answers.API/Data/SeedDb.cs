@@ -1,10 +1,8 @@
-﻿using Answers.API.Controllers;
-using Answers.API.Helpers;
+﻿using Answers.API.Helpers;
 using Answers.API.Services;
 using Answers.Shared.Entities;
 using Answers.Shared.Enums;
 using Answers.Shared.Responses;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 
 namespace Answers.API.Data
@@ -32,7 +30,7 @@ namespace Answers.API.Data
             await CheckAnswerAsync();
             await CheckUserAsync("1037637599", "Jose", "Rendon", "jose@yopmail.com", "322 311 4620", "Calle falsa 123", UserType.Admin);
             await CheckUserAsync("1020304050", "Jeisson", "Garcia", "jeisson@yopmail.com", "322 300 2333", "Calle nula 123", UserType.Admin);
-            
+
         }
 
         private async Task CheckRolesAsync()
@@ -155,7 +153,7 @@ namespace Answers.API.Data
                 var Questionaire = await _context.Questionnaires.FirstOrDefaultAsync(x => x.Title == "Encuesta satisfaccion de usuarios");
                 if (Questionaire != null)
                 {
-                    _context.Questions.Add(new Question { Name = "¿Recomendarías nuestro servicio a otras personas?", Type = 0,QuestionnaireId = Questionaire.Id });
+                    _context.Questions.Add(new Question { Name = "¿Recomendarías nuestro servicio a otras personas?", Type = 0, QuestionnaireId = Questionaire.Id });
                     await _context.SaveChangesAsync();
                     _context.Questions.Add(new Question { Name = "¿Consideras que el precio del servicio es justo y razonable?", Type = 0, QuestionnaireId = Questionaire.Id });
                     await _context.SaveChangesAsync();
